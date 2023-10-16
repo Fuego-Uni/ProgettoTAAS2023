@@ -1,0 +1,43 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/user/**
+        - id: group-service
+          uri: lb://group-service
+          predicates:
+            - Path=/api/v1/group/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notification/**
+        - id: chat-service
+          uri: lb://chat-service
+          predicates:
+            - Path=/api/v1/chat/**
+        - id: shopping-service
+          uri: lb://shopping-service
+          predicates:
+            - Path=/api/v1/shopping/**
+        - id: calendar-service
+          uri: lb://calendar-service
+          predicates:
+            - Path=/api/v1/calendar/**
+  application:
+    name: api-gateway
+
+
+eureka:
+  instance:
+    preferIpAddress: true
+    appname: api-gateway
+  client:
+    serviceUrl:
+      defaultZone: http://service-discovery-server:8761/eureka/
+
+
+server:
+  port: 8080
