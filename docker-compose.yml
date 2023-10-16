@@ -3,15 +3,34 @@ services:
  demo:
     image: filmserie:latest
     ports:
+      - "8081:8081"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
+    depends_on:
+      - service-discovery-server
+      
+    networks:
+      - opnet
+ service-discovery-server:
+    image: service_discovery_server
+    ports:
+      - "8761:8761"
+    expose:
+      - "8761"
+    networks:
+      - opnet
+
+ api-gateway:
+    image: api_gateway
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
+    ports:
       - "8080:8080"
-#    depends_on:
-#      - db
- #     - phpmyadmin
- #   build:
- #     context: ./demo
- #     dockerfile: Dockerfile
- #   environment:
- #     SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/book_db?useSSL=false&allowPublicKeyRetrieval=true
-#      SPRING_DATASOURCE_USERNAME: root
-  #    SPRING_DATASOURCE_PASSWORD: root
- #   restart: always
+    depends_on:
+      - service-discovery-server
+    networks:
+      - opnet
+
+networks:
+  opnet:
+    driver: bridge

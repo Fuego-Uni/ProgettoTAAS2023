@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: demo
+eureka:
+  instance:
+    preferIpAddress: true
+    appname: demo
+  client:
+    serviceUrl:
+      defaultZone: http://service-discovery-server:8761/eureka/
+
+server:
+  port: 8081

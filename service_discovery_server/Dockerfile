@@ -18,6 +18,6 @@
 # CMD [ "bash", "-c", "java ${JAVA_OPTS} -jar *.jar -v"]
 
 FROM openjdk:17
-COPY target/*.jar /app/*.jar
-ENV JAVA_OPTS ""
-CMD [ "bash", "-c", "java ${JAVA_OPTS} -jar /app/*.jar -v"]
+ARG JAR_FILE=target/service_discovery_server-0.0.1-SNAPSHOT.jar
+ADD ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
