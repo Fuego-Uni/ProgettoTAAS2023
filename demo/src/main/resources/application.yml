@@ -1,6 +1,14 @@
 spring:
-  application:
-    name: demo
+  main:
+    allow-bean-definition-overriding: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 587014099008-96idp4akl4rorq7d9nau45be9pe3uaft.apps.googleusercontent.com
+            client-secret: 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
 eureka:
   instance:
     preferIpAddress: true
