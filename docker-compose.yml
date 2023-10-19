@@ -1,6 +1,6 @@
 version: '3.7'
 services:
- demo:
+  demo:
     image: filmserie:latest
     ports:
       - "8081:8081"
@@ -8,10 +8,12 @@ services:
       - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
     depends_on:
       - service-discovery-server
+      - db
+      - phpmyadmin
       
     networks:
       - opnet
- service-discovery-server:
+  service-discovery-server:
     image: service_discovery_server
     ports:
       - "8761:8761"
@@ -20,7 +22,7 @@ services:
     networks:
       - opnet
 
- api-gateway:
+  api-gateway:
     image: api_gateway
     environment:
       - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
@@ -30,6 +32,30 @@ services:
       - service-discovery-server
     networks:
       - opnet
+  
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: taas_db
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: taas_pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8067:80
+
 
 networks:
   opnet:
