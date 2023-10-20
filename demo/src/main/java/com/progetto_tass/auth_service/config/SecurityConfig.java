@@ -1,5 +1,4 @@
 package com.film_Serietv.demo.config;
-import com.film_Serietv.demo.config.OAuth2LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,8 +6,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +29,9 @@ public class SecurityConfig {
      })
      .oauth2Login(oauth2 -> oauth2
              //.loginPage("/login").permitAll()
-         .successHandler(OAuth2LoginSuccessHandler))
-     .formLogin(withDefaults());
+         .successHandler(OAuth2LoginSuccessHandler));
 
-
+     
     return http.build();
 
  }

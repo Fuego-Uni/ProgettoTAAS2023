@@ -17,16 +17,15 @@ import jakarta.servlet.http.Cookie;
 @RequestMapping("/demo")
 public class DemoController {
 
-    
-
-    @GetMapping("/gfg")
-    public ResponseEntity<String> getAnonymous(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                System.out.println(cookie.getName() + ": " + cookie.getValue());
-            }
+    @GetMapping("/getToken")
+    public ResponseEntity<String> getToken(HttpServletRequest request) {
+        Enumeration<String> headerNames = request.getHeaderNames();
+        StringBuilder headers = new StringBuilder();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            headers.append(headerName).append(": ").append(request.getHeader(headerName)).append("\n");
         }
-        return ResponseEntity.ok(cookies.toString());
+        return ResponseEntity.ok().body(headers.toString());
     }
+
 }

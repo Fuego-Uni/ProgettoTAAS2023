@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements com.film_Serietv.demo.service.UserService {
 
     private final UserEntityRepository userEntityRepository;
 
