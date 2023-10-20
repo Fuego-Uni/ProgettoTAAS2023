@@ -1,4 +1,4 @@
-package com.film_Serietv.demo.controller;
+package com.progetto_tass.auth_service.controller;
 
 import java.net.http.HttpRequest;
 import java.util.Enumeration;
@@ -14,7 +14,7 @@ import jakarta.servlet.http.Cookie;
 
 
 @RestController
-@RequestMapping("/demo")
+@RequestMapping("/auth")
 public class DemoController {
 
     @GetMapping("/getToken")

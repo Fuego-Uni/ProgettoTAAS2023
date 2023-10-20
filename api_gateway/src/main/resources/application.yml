@@ -5,7 +5,9 @@ spring:
         - id: demo                 # id: You can give any id as of now.
           uri: lb://demo            # uri: Here you have to provide the port in which your microservice is running (demo)     
           predicates:              # predicates (- Path): Here we have provided the path “/demo/**”, which means any
-            - Path=/demo/** # request starting with path “/demo/**” route it to DEMO-SERVICE.              
+            - Path=/demo/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
+          filters:
+            - AuthenticationFilter
   application:
     name: api-gateway
 

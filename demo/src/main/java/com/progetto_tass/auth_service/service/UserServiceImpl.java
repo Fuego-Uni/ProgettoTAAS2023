@@ -1,15 +1,15 @@
-package com.film_Serietv.demo.service;
+package com.progetto_tass.auth_service.service;
 
-import com.film_Serietv.demo.repository.UserEntityRepository;
+import com.progetto_tass.auth_service.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.film_Serietv.demo.entity.UserEntity;
+import com.progetto_tass.auth_service.entity.UserEntity;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements com.film_Serietv.demo.service.UserService {
+public class UserServiceImpl implements com.progetto_tass.auth_service.service.UserService {
 
     private final UserEntityRepository userEntityRepository;
 

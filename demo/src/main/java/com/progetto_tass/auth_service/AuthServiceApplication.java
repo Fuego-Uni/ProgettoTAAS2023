@@ -1,13 +1,13 @@
-package com.film_Serietv.demo;
+package com.progetto_tass.auth_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FilmSerieTvApplication {
+public class AuthServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FilmSerieTvApplication.class, args);
+		SpringApplication.run(com.progetto_tass.auth_service.AuthServiceApplication.class, args);
 	}
 
 }

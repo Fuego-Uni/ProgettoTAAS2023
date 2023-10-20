@@ -1,6 +1,6 @@
-package com.film_Serietv.demo.service;
+package com.progetto_tass.auth_service.service;
 
-import com.film_Serietv.demo.entity.UserEntity;
+import com.progetto_tass.auth_service.entity.UserEntity;
 
 import java.util.Optional;
 
