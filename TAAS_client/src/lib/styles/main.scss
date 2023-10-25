@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+
+  background-color: var(--color-main-background);
+  
+  font-family: 'Antonio', sans-serif;
+}
+
+:root {
+  --color-main-background: #141418;
+  --color-main-accent: #D51F1A;
+  --color-main-text: #FFFFFF;
+
+  --color-ui-base-unfocused: #232228;
+  --color-ui-base-focused: #2D2D33;
+
+  --color-ui-text-unfocused: #888888;
+  --color-ui-text-focused: #FFFFFF;
+}
+
+.ui-base {
+  background-color: var(--color-ui-base-unfocused);
+  border-radius: 5px;
+  padding: 10px;
+
+  color: var(--color-ui-text-unfocused);
+  fill: var(--color-ui-text-unfocused);
+
+  transition: all 0.2s ease-in-out;
+
+  cursor: pointer;
+
+  &:hover, &:focus {
+    background-color: var(--color-ui-base-focused);
+    color: var(--color-ui-text-focused);
+    fill: var(--color-ui-text-focused);
+  }
+}
+
+* {
+  scrollbar-width: thin;          /* "auto" or "thin" */
+  scrollbar-color: var(--color-ui-text-unfocused) transparent;   /* scroll thumb and track */
+}
+
+*::-webkit-scrollbar {
+  width: 5px;               /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;        /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-ui-text-unfocused);    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  // border: 3px solid red;  /* creates padding around scroll thumb */
+}
