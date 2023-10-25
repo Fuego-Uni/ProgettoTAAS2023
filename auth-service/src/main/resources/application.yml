@@ -1,14 +1,12 @@
 spring:
   application:
-    name: auth_service
-  main:
-    allow-bean-definition-overriding: true
+    name: authservice
+
   datasource:
-    #url: jdbc:mysql:${DB_HOST}:${DB_PORT}/${DB_DATABASE}
     url: jdbc:mysql://localhost:3306/taas_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
     username: root
     password: root
-    driveri-class-name: com.mysql.cj.jdbc.Driver
+    #driveri-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -24,20 +22,23 @@ spring:
         registration:
           google:
             client-id: 611783894582-gbcl6d7lidpkfpgjuk0qoihfe1tme2j9.apps.googleusercontent.com
-            client-secret: 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
-
+            client-secret: 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 
+            #redirectUri: http://localhost:8081/oauth2/callback
+            scope:
+              - email
+              - profile
 eureka:
   instance:
     preferIpAddress: true
-    appname: auth-service
+    appname: authservice
   client:
     enabled: true
     serviceUrl:
-      defaultZone: http://service-discovery-server:8761/eureka/
-
+      #defaultZone: http://service-discovery-server:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
 server:
   port: 8081
 
 frontend:
-  url: http://localhost:5173
+  url: http://localhost:5173 
 

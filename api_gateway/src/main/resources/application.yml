@@ -1,24 +1,40 @@
 spring:
+  application:
+    name: api-gateway
   cloud:
     gateway:
       routes:
-        - id: demo                 # id: You can give any id as of now.
-          uri: lb://demo            # uri: Here you have to provide the port in which your microservice is running (demo)     
+        - id: review                 # id: You can give any id as of now.
+          uri: lb://reviewservice          # uri: Here you have to provide the port in which your microservice is running (demo)
           predicates:              # predicates (- Path): Here we have provided the path “/demo/**”, which means any
-            - Path=/demo/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
+            - Path=/review/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
           filters:
             - AuthenticationFilter
-  application:
-    name: api-gateway
 
+        - id: authservice
+          uri: lb://authservice
+          predicates:
+            - Path=/auth/**
+          
+
+        - id: authservice_1
+          uri: lb://authservice
+          predicates:
+            - Path=/login/**
+
+        - id: authservice_2
+          uri: lb://authservice
+          predicates:
+            - Path=/oauth2/**
 
 eureka:
   instance:
-    preferIpAddress: true
+    #preferIpAddress: true
     appname: api-gateway
   client:
     serviceUrl:
       defaultZone: http://service-discovery-server:8761/eureka/
+      #defaultZone: http://localhost:8761/eureka/
 
 
 server:

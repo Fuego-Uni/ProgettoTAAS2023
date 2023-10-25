@@ -1,14 +1,13 @@
-package com.progetto_tass.auth_service;
+package com.progettotaas.reviewservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-
-public class AuthServiceApplication {
+public class ReviewserviceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(com.progetto_tass.auth_service.AuthServiceApplication.class, args);
+		SpringApplication.run(ReviewserviceApplication.class, args);
 	}
 
 }

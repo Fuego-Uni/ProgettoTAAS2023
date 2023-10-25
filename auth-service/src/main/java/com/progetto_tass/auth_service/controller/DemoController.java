@@ -3,9 +3,10 @@ package com.progetto_tass.auth_service.controller;
 import java.net.http.HttpRequest;
 import java.util.Enumeration;
 
-
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,15 +18,32 @@ import jakarta.servlet.http.Cookie;
 @RequestMapping("/auth")
 public class DemoController {
 
-    @GetMapping("/getToken")
-    public ResponseEntity<String> getToken(HttpServletRequest request) {
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody AuthRequest request) {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        
+        
+        
+        return ResponseEntity.ok("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
-        StringBuilder headers = new StringBuilder();
+        boolean hasAuthorization = false;
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
-            headers.append(headerName).append(": ").append(request.getHeader(headerName)).append("\n");
+            if (headerName.equalsIgnoreCase("Authorization")) {
+                hasAuthorization = true;
+                break;
+            }
         }
-        return ResponseEntity.ok().body(headers.toString());
+        if (hasAuthorization) {
+            return ResponseEntity.ok("Login");
+        } else {
+            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Authorization header not found");
+        }
     }
 
 }
