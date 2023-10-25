@@ -1,8 +1,12 @@
 <script lang="ts">
+  import { initiateAxios } from '$lib/authentication';
   import Categories from '$lib/components/Categories.svelte';
-import Search from '$lib/components/Search.svelte';
+  import Search from '$lib/components/Search.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
-import '$lib/styles/main.scss'
+  import '$lib/styles/main.scss'
+  import { onMount } from 'svelte';
+
+  onMount(() => { initiateAxios(); });
 </script>
 
 <div class="page">
