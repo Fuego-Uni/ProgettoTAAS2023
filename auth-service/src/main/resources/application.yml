@@ -16,17 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
     database-platform: org.hibernate.dialect.MySQL5Dialect
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 611783894582-gbcl6d7lidpkfpgjuk0qoihfe1tme2j9.apps.googleusercontent.com
-            client-secret: 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 
-            #redirectUri: http://localhost:8081/oauth2/callback
-            scope:
-              - email
-              - profile
+
 eureka:
   instance:
     preferIpAddress: true

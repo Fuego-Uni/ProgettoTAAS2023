@@ -19,7 +19,4 @@ public class UserEntity {
  @Enumerated(EnumType.STRING)
  private UserRole role;
 
- @Column(name = "source")
- @Enumerated(EnumType.STRING)
- private RegistrationSource source;
 }

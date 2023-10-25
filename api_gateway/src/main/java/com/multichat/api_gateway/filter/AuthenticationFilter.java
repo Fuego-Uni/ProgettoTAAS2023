@@ -4,7 +4,9 @@ import com.google.common.net.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
@@ -17,39 +19,26 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Override
     public GatewayFilter apply(Config config) {
-                return ((exchange, chain) -> {
-                    System.out.printf("inside Auth filter...!");
-                    if (validator.isSecured.test(exchange.getRequest())) {
-                        System.out.println("secured api...!");
-                        //header contains token or not
-                        if (exchange.getRequest().getHeaders().containsKey(HttpHeaders.COOKIE)) {
-                            org.springframework.http.HttpHeaders headers = exchange.getRequest().getHeaders();
-                            boolean containsSessionId = false;
-                            for (String cookie : headers.get(HttpHeaders.COOKIE)) {
-                                if (cookie.contains("SESSIONID")) {
-                                    containsSessionId = true;
-                                    break;
-                                }
-                            }
-                            if (!containsSessionId) {
-                                throw new RuntimeException("missing SESSIONID cookie");
-                            }
-                        } else {
-                            throw new RuntimeException("missing cookie header");
-                        }
-                        try {
-                            //REST call to AUTH service             
-                            //template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
-                            //jwtUtil.validateToken(authHeader);
-                        } catch (Exception e) {
-                            System.out.println("invalid access...!");
-                            throw new RuntimeException("unauthorized access to application");
-                        }
-                    } else {
-                        System.out.println("open api...!");
-                    }
-                    return chain.filter(exchange);
-                });
+        return ((exchange, chain) -> {
+            System.out.printf("inside Auth filter...!");
+            if (validator.isSecured.test(exchange.getRequest())) {
+                System.out.println("secured api...!");
+                //header contains token or not
+                if (exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                    String token = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+                    System.out.println("Token: " + token);
+                    String URL = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + token;
+                    RestTemplate restTemplate = new RestTemplate();
+                    ResponseEntity<String> responseEntity = restTemplate.postForEntity(URL, token, String.class);
+                    System.out.println("Response from auth service: " + responseEntity.getBody());
+                } else {
+                    throw new RuntimeException("missing cookie header");
+                }   
+            } else {
+                System.out.println("open api...!");
+            }
+            return chain.filter(exchange);
+        });
     }
 
     public static class Config {
