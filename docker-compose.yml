@@ -53,6 +53,9 @@ services:
       - service-discovery-server
     networks:
       - opnet
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
   
   userdb:
     image: mysql:8.0

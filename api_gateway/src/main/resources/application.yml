@@ -10,23 +10,17 @@ spring:
             - Path=/review/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
           filters:
             - AuthenticationFilter
-
-        - id: authservice
-          uri: lb://authservice
-          predicates:
-            - Path=/auth/**
           
 
-        - id: authservice_1
-          uri: lb://authservice
-          predicates:
-            - Path=/login/**
-
-        - id: authservice_2
-          uri: lb://authservice
-          predicates:
-            - Path=/oauth2/**
-
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+            - GET
+            - POST 
+  
 eureka:
   instance:
     #preferIpAddress: true
