@@ -19,7 +19,11 @@ for d in f:
   print("Building " + d)
   print("=====================================")
   os.chdir(d)
-  os.system('mvn package')
+  # check if on unix
+  if os.name == 'posix':
+    os.system('./mvnw package')
+  else:
+    os.system('mvnw package')
   os.chdir('..')
 
 # end timer, print in seconds
