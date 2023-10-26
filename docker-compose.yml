@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   auth-service:
-    image: auth-service:latest
+    image: service_auth:latest
     ports:
       - "8081:8081"
     links:
@@ -17,7 +17,7 @@ services:
       - opnet
       
   review-service:
-      image: reviewservice
+      image: service_reviews:latest
       ports:
       - "8083:8083"
       links:
@@ -44,7 +44,7 @@ services:
       - opnet
 
   api-gateway:
-    image: api_gateway
+    image: service_gateway:latest
     environment:
       - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
     ports:
