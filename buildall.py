@@ -1,6 +1,11 @@
 import os
 import time
 from os import walk
+import sys
+
+# get args
+args = sys.argv
+build_filter = args[1:]
 
 f = []
 for (dirpath, dirnames, filenames) in walk('.'):
@@ -9,6 +14,18 @@ for (dirpath, dirnames, filenames) in walk('.'):
 
 # filter only directories that start with service_
 f = filter(lambda x: x.startswith('service_'), f)
+
+
+# check if a folder matches any of the filters
+def matches_filter(folder):
+  for filter in build_filter:
+    if filter in folder:
+      return True
+  return False
+
+# filter out folders that don't match the filter
+if len(build_filter) > 0:
+  f = filter(matches_filter, f)
 
 # start timer
 start = time.time()
@@ -24,6 +41,7 @@ for d in f:
     os.system('./mvnw package')
   else:
     os.system('mvnw package')
+  os.system(f'docker build -t {d} .')
   os.chdir('..')
 
 # end timer, print in seconds
