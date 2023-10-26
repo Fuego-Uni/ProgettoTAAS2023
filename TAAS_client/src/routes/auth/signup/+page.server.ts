@@ -5,9 +5,10 @@ import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET } from '../../../lib/index';
 
 export const actions = {
   OAuth2: async ({ }) => {
-    const redirectURL = 'http://localhost:5173/auth/authenticate';
+    // const redirectURL = 'http://localhost:5173/auth/authenticate';
+    const redirectURL = 'http://localhost:5173/oauth';
 
-    console.log('id', SECRET_CLIENT_ID)
+    // console.log('id', SECRET_CLIENT_ID)
 
     const oAuth2Client = new OAuth2Client(
       SECRET_CLIENT_ID,
@@ -18,7 +19,7 @@ export const actions = {
     // Generate the url that will be used for the consent dialog.
     const authorizeUrl = oAuth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: 'https://www.googleapis.com/auth/userinfo.profile  openid ',
+      scope: 'https://www.googleapis.com/auth/userinfo.profile  openid email',
       prompt: 'consent'
     });
 

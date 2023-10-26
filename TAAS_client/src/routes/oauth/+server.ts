@@ -13,8 +13,7 @@ export const GET = async ({ url }) => {
   const redirectURL = 'http://localhost:5173/oauth';
   const code = url.searchParams.get('code')!;
 
-  //console.log('returned state',state)
-  // console.log('returned code', code)
+  let user = null;
 
   try {
     const oAuth2Client = new OAuth2Client(
@@ -26,16 +25,20 @@ export const GET = async ({ url }) => {
 
     // Make sure to set the credentials on the OAuth2 client.
     oAuth2Client.setCredentials(r.tokens);
-    // console.info('Tokens acquired.');
-    const user = oAuth2Client.credentials;
+    user = oAuth2Client.credentials;
+
     // console.log('credentials',user);
 
     // await getUserData(user.access_token);
 
+    // console.log(user.access_token)
 
   } catch (err) {
     console.log('Error logging in with OAuth2 user', err);
+
+    // TODO: redirect to error page
+    throw redirect(302, '/');
   }
-  
-  throw redirect(302, '/');
+
+  throw redirect(302, `/auth/authenticate?code=${user.access_token}`);
 };
