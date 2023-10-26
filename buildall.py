@@ -12,8 +12,8 @@ for (dirpath, dirnames, filenames) in walk('.'):
   f.extend(dirnames)
   break
 
-# filter only directories that start with service_
-f = filter(lambda x: x.startswith('service_'), f)
+# filter only directories that start with service
+f = filter(lambda x: x.startswith('service'), f)
 
 
 # check if a folder matches any of the filters
@@ -40,7 +40,7 @@ for d in f:
   if os.name == 'posix':
     os.system('./mvnw package')
   else:
-    os.system('mvnw package')
+    os.system('mvn package')
   os.system(f'docker build -t {d} .')
   os.chdir('..')
 

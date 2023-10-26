@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: review                 # id: You can give any id as of now.
+          uri: lb://service-reviews          # uri: Here you have to provide the port in which your microservice is running (demo)
+          predicates:              # predicates (- Path): Here we have provided the path “/demo/**”, which means any
+            - Path=/review/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
+          filters:
+            - AuthenticationFilter
+
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+
+eureka:
+  instance:
+    #preferIpAddress: true
+    appname: service-gateway
+  client:
+    serviceUrl:
+      defaultZone: http://service-discovery-server:8761/eureka/
+      #defaultZone: http://localhost:8761/eureka/
+
+
+server:
+  port: 8080
