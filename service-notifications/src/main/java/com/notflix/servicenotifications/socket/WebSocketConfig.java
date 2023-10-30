@@ -16,5 +16,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
       .addHandler(messageHandler, "/notification/socket")
       .setAllowedOrigins("*");
   }
-
 }

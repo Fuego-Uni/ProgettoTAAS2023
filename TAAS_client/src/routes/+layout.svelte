@@ -10,7 +10,6 @@
 
   onMount(() => {
     initiateAxios();
-    createMainSocket();
   });
 </script>
 

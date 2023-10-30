@@ -23,12 +23,14 @@ public class MessageHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    System.out.println("Connection established: " + session.getId());
     super.afterConnectionEstablished(session);
     webSocketSessions.add(session);
   }
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    System.out.println("Connection closed: " + session.getId());
     super.afterConnectionClosed(session, status);
 
     String username = SocketToUsername.get(session);
