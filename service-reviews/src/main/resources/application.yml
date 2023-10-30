@@ -1,6 +1,11 @@
 spring:
   application:
     name: service-reviews
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
 
   jpa:
     hibernate:

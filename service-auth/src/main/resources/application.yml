@@ -6,6 +6,11 @@ spring:
   #   url: jdbc:mysql://localhost:3306/taas_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&&createDatabaseIfNotExist=true
   #   username: root
   #   password: root
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
 
   jpa:
     hibernate:

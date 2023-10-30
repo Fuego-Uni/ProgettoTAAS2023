@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: service-notifications
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
+
+eureka:
+  instance:
+    preferIpAddress: true
+    appname: service-notifications
+  client:
+    enabled: true
+    serviceUrl:
+      defaultZone: http://service-discovery-server:8761/eureka/
+

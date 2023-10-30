@@ -1,9 +1,11 @@
 <script lang="ts">
+  import '$lib/styles/main.scss'
+  import '$lib/SocketConnection'
+
   import { initiateAxios } from '$lib/authentication';
   import Categories from '$lib/components/Categories.svelte';
   import Search from '$lib/components/Search.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
-  import '$lib/styles/main.scss'
   import { onMount } from 'svelte';
 
   onMount(() => { initiateAxios(); });
