@@ -1,6 +1,6 @@
 <script lang="ts">
   import '$lib/styles/main.scss'
-  import '$lib/SocketConnection'
+  import { createMainSocket } from '$lib/SocketConnection'
 
   import { initiateAxios } from '$lib/authentication';
   import Categories from '$lib/components/Categories.svelte';
@@ -8,7 +8,10 @@
   import Sidebar from '$lib/components/Sidebar.svelte';
   import { onMount } from 'svelte';
 
-  onMount(() => { initiateAxios(); });
+  onMount(() => {
+    initiateAxios();
+    createMainSocket();
+  });
 </script>
 
 <div class="page">

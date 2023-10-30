@@ -16,7 +16,7 @@ spring:
           filters:
             - AuthenticationFilter
         - id: notification                 # id: You can give any id as of now.
-          uri: lb://service-notification          # uri: Here you have to provide the port in which your microservice is running (demo)
+          uri: lb://service-notifications          # uri: Here you have to provide the port in which your microservice is running (demo)
           predicates:              # predicates (- Path): Here we have provided the path “/demo/**”, which means any
             - Path=/notification/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
           filters:

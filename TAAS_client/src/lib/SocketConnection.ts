@@ -18,7 +18,7 @@ export class SocketConnection {
   }
 
   connect() {
-    this.socket = new WebSocket(`wss://localhost:8080/notification/socket`);
+    this.socket = new WebSocket(`wss://localhost:8082/notification/socket`);
     this.handlers = {};
 
     this.socket.onopen = () => {
@@ -74,6 +74,12 @@ export class SocketConnection {
 
 
 let main_socket: SocketConnection | null = null;
+
+export function createMainSocket() {
+  if(!main_socket) {
+    main_socket = new SocketConnection();
+  }
+}
 
 export function closeMainSocket() {
   if (main_socket) {
