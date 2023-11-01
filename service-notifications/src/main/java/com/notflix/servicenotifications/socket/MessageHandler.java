@@ -45,8 +45,6 @@ public class MessageHandler extends TextWebSocketHandler {
   public void handleMessage(WebSocketSession session, WebSocketMessage<?> _message) throws Exception {
     super.handleMessage(session, _message);
 
-    System.out.println("Message received: " + _message.getPayload());
-
     SocketMessage message = gson.fromJson((String) _message.getPayload(), SocketMessage.class);
 
     switch (message.message) {

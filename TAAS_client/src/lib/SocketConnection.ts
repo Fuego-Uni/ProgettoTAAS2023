@@ -18,7 +18,7 @@ export class SocketConnection {
   }
 
   connect() {
-    this.socket = new WebSocket(`wss://localhost:8082/notification/socket`);
+    this.socket = new WebSocket(`ws://localhost:8082/notification/socket`);
     this.handlers = {};
 
     this.socket.onopen = () => {
