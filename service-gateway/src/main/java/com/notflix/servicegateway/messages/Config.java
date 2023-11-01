@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Config {
-  @Bean public static DirectExchange multichatExchange() { return new DirectExchange("multichat-exchange"); }
+  @Bean public static DirectExchange notflixExchange() { return new DirectExchange("notflix-exchange"); }
 }
