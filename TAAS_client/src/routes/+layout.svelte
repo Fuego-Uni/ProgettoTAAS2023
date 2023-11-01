@@ -45,7 +45,7 @@
 
     height: 100vh;
     width: 100vw;
-
+    
     .logo-wrapper {
       grid-area: logo;
 
