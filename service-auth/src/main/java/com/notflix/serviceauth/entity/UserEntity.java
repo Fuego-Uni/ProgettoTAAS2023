@@ -36,5 +36,23 @@ public class UserEntity {
  public void setRole(UserRole role) {
   this.role = role;
  }
+ public void setFriends(List<UserEntity> friends) {
+  this.friends = friends;
+ }
+ // getters
+
+ public String getName() {
+  return name;
+ }
+ public String getEmail() {
+  return email;
+ }
+ public UserRole getRole() {
+  return role;
+ }
+ public List<UserEntity> getFriends() {
+  return friends;
+ }
+
 
 }

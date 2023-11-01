@@ -14,40 +14,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    Gson gson = new Gson();
+  Gson gson = new Gson();
 
-    @Autowired
-    public UserEntityRepository userEntityRepository;
+  @Autowired
+  public UserEntityRepository userEntityRepository;
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(HttpServletRequest request, @RequestBody AuthRequest userdata) {
-        System.out.println("userdata: " + userdata);
-        //ResponseEntity.ok("User authenticated successfully");
-        String email = userdata.email;
-        Optional<UserEntity> user = userEntityRepository.findByEmail(email);
+  @PostMapping("/authenticate")
+  public ResponseEntity<String> authenticate(HttpServletRequest request, @RequestBody AuthRequest userdata) {
+    System.out.println("userdata: " + userdata);
+    
+    String email = userdata.email;
+    Optional<UserEntity> user = userEntityRepository.findByEmail(email);
 
-        if (user.isEmpty()) {
-            var newUser = new UserEntity();
-            newUser.setEmail(email);
-            newUser.setName(userdata.name);
-            newUser.setRole(UserRole.ROLE_USER);
-            userEntityRepository.save(newUser);
-        }
-
-        return ResponseEntity.ok("User authenticated successfully");
-    }
-    @PostMapping("/addFirend")
-    public ResponseEntity<String> addFriend(HttpServletRequest request, @RequestBody AuthRequest userdatafirend){
-        // 
-        String header = request.getHeader("Authorization");
-        
-
-
+    if (user.isEmpty()) {
+      var newUser = new UserEntity();
+      newUser.setEmail(email);
+      newUser.setName(userdata.name);
+      newUser.setRole(UserRole.ROLE_USER);
+      userEntityRepository.save(newUser);
     }
 
-
+    return ResponseEntity.ok("User authenticated successfully");
+  }
 }
