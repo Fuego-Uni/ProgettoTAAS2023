@@ -18,12 +18,11 @@ export class SocketConnection {
   }
 
   connect() {
-    this.socket = new WebSocket(`ws://localhost:8082/notification/socket`);
+    this.socket = new WebSocket(`ws://localhost:8080/notification/socket`);
     this.handlers = {};
 
     this.socket.onopen = () => {
-      // console.log("socket opened")
-
+      console.log("socket opened");
       this.send({
         message: 'register-client',
         data: 'tomm2000'
@@ -31,10 +30,12 @@ export class SocketConnection {
     };
 
     this.socket.onclose = () => {
-      // console.log("socket closed")
+      console.log("socket closed")
     };
 
     this.socket.onmessage = (event) => {
+      console.log("socket message", event.data);
+
       const data = JSON.parse(event.data);
 
       let handlers = this.handlers[data.message];
@@ -55,8 +56,6 @@ export class SocketConnection {
     }
 
     this.handlers[message][id] = callback;
-
-    // console.table(this.handlers)
   }
 
   send(message: SocketMessage) {

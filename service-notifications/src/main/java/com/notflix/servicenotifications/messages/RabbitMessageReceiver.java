@@ -18,7 +18,7 @@ public class RabbitMessageReceiver {
 
   @Bean Queue notificationQueue() { return new Queue("notification_queue"); }
 
-  @Bean Binding groupUpdateBinding() { return BindingBuilder.bind(notificationQueue()).to(Config.notflixExchange()).with("notification.group.update");        }
+  @Bean Binding groupUpdateBinding() { return BindingBuilder.bind(notificationQueue()).to(Config.notflixExchange()).with("notification.default");        }
 
   @RabbitListener(queues = "notification_queue")
   public void notificationMessageReceive(String _message) {
@@ -31,8 +31,13 @@ public class RabbitMessageReceiver {
       String[] users = notificationMessage.getUsers();
   
       SocketMessage socketMessage = new SocketMessage("notification", data);
-  
-      WebSocketConfig.messageHandler.sendMessageToUsers(users, socketMessage);
+
+//      if users is null, send to all users
+      if(users == null) {
+        WebSocketConfig.messageHandler.sendMessageToAll(socketMessage);
+      } else {
+        WebSocketConfig.messageHandler.sendMessageToUsers(users, socketMessage);
+      }
     } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
     }
