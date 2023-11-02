@@ -13,8 +13,9 @@ SpringBoot 3 is a Java-based web application built using the Spring Boot framewo
 Follow these steps to get the project up and running:
 
 1. **Build and run Docker :**
-   ```
-   TOD=: 
+   ```   
+   python3 buildall.py  
+   
    ```
 
 2. **Run the Dockerfile:**

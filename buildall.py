@@ -38,6 +38,7 @@ for d in f:
   os.chdir(d)
   # check if on unix
   if os.name == 'posix':
+    os.system('chmod +x mvnw')
     os.system('./mvnw package')
   else:
     os.system('mvn package')
