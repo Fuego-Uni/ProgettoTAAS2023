@@ -26,6 +26,10 @@ public class MessageHandler extends TextWebSocketHandler {
     System.out.println("Connection established: " + session.getId());
     super.afterConnectionEstablished(session);
     webSocketSessions.add(session);
+
+    String user_email = (String) session.getAttributes().get("email");
+    UsernameToSocket.put(user_email, session);
+    SocketToUsername.put(session, user_email);
   }
 
   @Override
@@ -48,10 +52,6 @@ public class MessageHandler extends TextWebSocketHandler {
     SocketMessage message = gson.fromJson((String) _message.getPayload(), SocketMessage.class);
 
     switch (message.message) {
-      case "register-client":
-        assignUsername(session, message.data);
-        break;
-    
       default:
         break;
     }
@@ -85,12 +85,5 @@ public class MessageHandler extends TextWebSocketHandler {
         System.out.println("Error sending message to user: " + e.getMessage());
       }
     }
-  }
-
-  private void assignUsername(WebSocketSession session, String username) {
-     System.out.println("Assigning username: " + username);
-    
-    UsernameToSocket.put(username, session);
-    SocketToUsername.put(session, username);
   }
 }

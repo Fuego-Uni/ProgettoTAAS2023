@@ -1,8 +1,8 @@
 <div class="categories">
-  <div class="category ui-base">Film</div>
-  <div class="category ui-base">SerieTV</div>
-  <div class="category ui-base">Musica</div>
-  <div class="category ui-base">Libri</div>
+  <div class="category ui-interactive">Film</div>
+  <div class="category ui-interactive">SerieTV</div>
+  <div class="category ui-interactive">Musica</div>
+  <div class="category ui-interactive">Libri</div>
 </div>
 
 <style lang="scss">
@@ -15,6 +15,8 @@
     align-items: center;
 
     gap: 0.3rem;
+
+    padding: 0 1rem;
 
     .category {
       height: 2rem;

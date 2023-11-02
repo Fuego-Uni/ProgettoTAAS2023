@@ -9,17 +9,23 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: review                 # id: You can give any id as of now.
-          uri: lb://service-reviews          # uri: Here you have to provide the port in which your microservice is running (demo)
-          predicates:              # predicates (- Path): Here we have provided the path “/demo/**”, which means any
-            - Path=/review/** # request starting with path “/demo/**” route it to DEMO-SERVICE.
+        - id: review
+          uri: lb://service-reviews
+          predicates:
+            - Path=/review/**
           filters:
             - AuthenticationFilter
-
         - id: notification
           uri: lb://service-notifications
           predicates:
             - Path=/notification/**
+        - id: auth
+          uri: lb://service-auth
+          predicates:
+            - Path=/friend/**
+          filters:
+            - AuthenticationFilter
+
       globalcors:
         corsConfigurations:
           '[/**]':

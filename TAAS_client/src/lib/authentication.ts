@@ -7,8 +7,6 @@ export function setAuthenticationToken(token: string | null) {
     return
   }
   localStorage.setItem('auth-token', token)
-
-  console.log('token', token)
 }
 
 export function initiateAxios() {

@@ -1,15 +1,21 @@
 <script lang="ts">
   import '$lib/styles/main.scss'
-  import { createMainSocket } from '$lib/SocketConnection'
 
   import { initiateAxios } from '$lib/authentication';
   import Categories from '$lib/components/Categories.svelte';
   import Search from '$lib/components/Search.svelte';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   onMount(() => {
     initiateAxios();
+
+    let url = $page.url.toString();
+    if(localStorage.getItem('auth-token') === null && !url.includes('auth/signup')) {
+      goto('auth/signup')
+    }
   });
 </script>
 
@@ -76,6 +82,7 @@
 
     .search-wrapper {
       grid-area: search;
+      padding-right: 1rem;
     }
 
     .sidebar-wrapper {
@@ -101,6 +108,12 @@
     grid-template-columns: 4rem 1fr 4rem;
     grid-template-rows: 4rem 2rem 1fr;
 
+    .sidebar-wrapper {
+      padding-left: 1rem;
+    }
+
+    .search-wrapper {
+    }
 
     .logo-wrapper {
       .logo {

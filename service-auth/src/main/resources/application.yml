@@ -30,3 +30,6 @@ eureka:
     serviceUrl:
       defaultZone: http://service-discovery-server:8761/eureka/
 
+
+server:
+  port: 8081

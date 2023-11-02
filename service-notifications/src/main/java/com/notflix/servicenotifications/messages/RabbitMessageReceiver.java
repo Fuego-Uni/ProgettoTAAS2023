@@ -32,8 +32,7 @@ public class RabbitMessageReceiver {
   
       SocketMessage socketMessage = new SocketMessage("notification", data);
 
-//      if users is null, send to all users
-      if(users == null) {
+      if(users.length == 0) {
         WebSocketConfig.messageHandler.sendMessageToAll(socketMessage);
       } else {
         WebSocketConfig.messageHandler.sendMessageToUsers(users, socketMessage);

@@ -24,7 +24,7 @@ public class AuthController {
 
   @PostMapping("/authenticate")
   public ResponseEntity<String> authenticate(HttpServletRequest request, @RequestBody AuthRequest userdata) {
-    System.out.println("userdata: " + userdata);
+    System.out.println(userdata);
     
     String email = userdata.email;
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
@@ -36,7 +36,7 @@ public class AuthController {
       newUser.setRole(UserRole.ROLE_USER);
       userEntityRepository.save(newUser);
     }
-
+  
     return ResponseEntity.ok("User authenticated successfully");
   }
 }

@@ -1,53 +1,89 @@
 <script lang="ts">
   import axios from "axios";
-  import { createMainSocket, closeMainSocket } from '$lib/SocketConnection'
+  import {
+    createMainSocket,
+    closeMainSocket,
+    mainSocketSetHandler,
+  } from "$lib/SocketConnection";
+  import { onMount } from "svelte";
 
   async function testRequest() {
     axios.get("http://localhost:8080/review/hello").then((res) => {
       console.log(res);
     });
   }
+
+  async function addFriend() {
+    axios
+      .post(`http://localhost:8080/friend/add`, {
+        friend: "tommasofogliobonda.tfb@gmail.com",
+        prova: "prova"
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
+  }
+
+  onMount(() => {
+    mainSocketSetHandler("notification", (data) => {
+      console.log(data);
+    });
+  });
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="sidebar">
-  <div class="user-ui ui-base" >
+  <div class="user-ui ui-interactive" on:click={addFriend}>add friend</div>
+  <div
+    class="user-ui ui-interactive"
+    on:click={() => {
+      localStorage.removeItem("auth-token");
+      console.log("removed token");
+    }}
+  >
+    remove token
   </div>
-  <div class="user-ui ui-base" on:click={closeMainSocket}>
+  <div class="user-ui ui-interactive" on:click={closeMainSocket}>
+    close socket
   </div>
-  <div class="user-ui ui-base" on:click={createMainSocket}>
+  <div class="user-ui ui-interactive" on:click={createMainSocket}>
+    create socket
   </div>
-  <div class="user-ui ui-base" on:click={testRequest}>
-    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
+  <div class="user-ui ui-interactive" on:click={testRequest}>
+    test request
+    <!-- <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc.<path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg> -->
   </div>
 </div>
 
 <style lang="scss">
-.sidebar {
-  width: 100%;
-  height: 100%;
-
-  padding: 0.5rem 0 0.5rem 0;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: flex-end;
-  align-items: center;
-
-  gap: 0.5rem;
-}
-
-.user-ui {
-  height: 3rem;
-  width: 3rem;
-
-  svg {
-    height: 100%;
+  .sidebar {
     width: 100%;
+    height: 100%;
 
-    // fill: white;
+    padding: 0.5rem 0 0.5rem 0;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 0.5rem;
   }
-}
+
+  .user-ui {
+    height: 3rem;
+    width: 3rem;
+
+    svg {
+      height: 100%;
+      width: 100%;
+
+      // fill: white;
+    }
+  }
 </style>

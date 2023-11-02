@@ -9,11 +9,13 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
   public static final MessageHandler messageHandler = new MessageHandler();
+  public static final SocketInterceptor socketInterceptor = new SocketInterceptor();
 
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
     webSocketHandlerRegistry
       .addHandler(messageHandler, "/notification/socket")
+      .addInterceptors(socketInterceptor)
       .setAllowedOrigins("*");
   }
 }

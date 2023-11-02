@@ -18,30 +18,55 @@ html, body {
   --color-main-accent: #D51F1A;
   --color-main-text: #FFFFFF;
 
-  --color-ui-base-unfocused: #232228;
-  --color-ui-base-focused: #2D2D33;
+  --color-ui-interactive-unfocused: #232228;
+  --color-ui-interactive-focused: #2D2D33;
 
   --color-ui-text-unfocused: #888888;
   --color-ui-text-focused: #FFFFFF;
 }
 
 .ui-base {
-  background-color: var(--color-ui-base-unfocused);
-  border-radius: 5px;
+  background-color: var(--color-ui-interactive-unfocused);
+  border-radius: 2px;
   padding: 10px;
 
   color: var(--color-ui-text-unfocused);
   fill: var(--color-ui-text-unfocused);
+}
+
+.ui-interactive {
+  @extend .ui-base;
 
   transition: all 0.2s ease-in-out;
 
   cursor: pointer;
 
   &:hover, &:focus {
-    background-color: var(--color-ui-base-focused);
+    background-color: var(--color-ui-interactive-focused);
     color: var(--color-ui-text-focused);
     fill: var(--color-ui-text-focused);
   }
+}
+
+.ui-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.ui-label-container {
+  color: var(--color-ui-text-unfocused);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.2rem;
 }
 
 * {

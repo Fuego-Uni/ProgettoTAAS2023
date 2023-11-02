@@ -6,6 +6,7 @@ import com.notflix.servicegateway.GoogleUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -40,13 +41,17 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
           GoogleUserInfo user = gson.fromJson(responseEntity1.getBody(), GoogleUserInfo.class);
           // append token to header
           exchange.getRequest().mutate().header(HttpHeaders.AUTHORIZATION, user.email);
+          
+          // service-auth
+          String URL2 = "http://service-auth:8081/auth/authenticate";
+          RestTemplate restTemplate2 = new RestTemplate();
+          AuthRequest authRequest = new AuthRequest(user.email, user.name);
+          //String authRequestJson = gson.toJson(authRequest);
 
-          // String URL2 = "https://authservice/auth/authenticate";
-          // RestTemplate restTemplate2 = new RestTemplate();
-          // ResponseEntity<String> responseEntity2 = restTemplate2.postForEntity(URL2,
-          // responseEntity1.getBody(), String.class);
-
-          // System.out.println("Response: " + responseEntity2.getBody());
+          ResponseEntity<String> responseEntity2 = restTemplate2.postForEntity(URL2,
+          authRequest, String.class);
+          
+          System.out.println("Response: " + responseEntity2.getBody());
         } else {
           throw new RuntimeException("missing cookie header");
         }

@@ -1,83 +1,66 @@
-<script>
+<script lang="ts">
+  import GoogleIcon from '$lib/assets/googleicon.png'
 </script>
 
-<div class="sign-in-wrapper">
-  <div class="sign-in-content">
-    <h2>Sign Up to Consulting Ninja</h2>
-    <form class="auth-form" method="post" action="?/OAuth2">
-      <div>
-        <button class="btn-auth" type="submit">
-          <img
-            class="btn-auth-img"
-            src="/google_signin_buttons/web/1x/btn_google_signin_dark_pressed_web.png"
-            alt="google sign in"
-          />
-        </button>
-      </div>
-    </form>
-  </div>
+<div class="page">
+  <form class="form" method="post" action="?/OAuth2">
+    <!-- <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 488 512">! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc.<path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg> -->
+    <img class="icon" src={GoogleIcon} />
+    <button class="btn-auth" type="submit">
+      Sign up with Google
+    </button>
+  </form>
 </div>
 
-<style>
-  div {
-    color: #000000;
-    margin-bottom: 0.5em;
-    text-shadow: 0 0 2px #ffffff;
-  }
+<style lang="scss">
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 
-  button {
-    width: 100%;
-    background-color: #fff;
-    transition: all 0.3s ease-in;
-  }
-  button:hover {
-    cursor: pointer;
-    text-decoration: underline;
-    color: #fff;
-    background-color: #4d4c4c;
-    transition: all 0.3s ease-in;
-  }
+  .form {
+    background-color: #4284f0;
+    border-radius: 1px;
 
-  .btn-auth-img:hover {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  }
-  .btn-auth {
-    border: 0;
-    background-color: rgba(84, 81, 81, 0);
-    padding: 0.01em;
-  }
-  .btn-auth:hover {
-    border: 0;
-    padding: 0.01em;
-    text-decoration: none;
-    background-color: rgba(84, 81, 81, 0);
-  }
-  .auth-form {
+    overflow: hidden;
+    
+
+    &:hover {
+      background-color: #3367d6;
+    }
+
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-  }
-  .sign-in-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-  .sign-in-content {
-    max-width: 350px;
-    background-color: rgba(84, 81, 81, 0.35);
-    padding: 1em;
-    border-radius: 5px;
+    cursor: pointer;
   }
 
-  .sign-in-wrapper {
-    height: 100vh;
+  .icon {
+    fill: white;
+    margin: 2px;
+    padding: 2px;
+
+    height: calc(2.5rem - 4px);
+    aspect-ratio: 1/1;
+
+    border-radius: 2px;
+
+    background-color: white;
   }
+
+  .btn-auth {
+    height: 2.5rem;
+    width: 10rem;
+
+    border: none;
+
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+
+    background-color: transparent;
+  }
+}
 </style>

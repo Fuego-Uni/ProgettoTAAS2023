@@ -18,15 +18,11 @@ export class SocketConnection {
   }
 
   connect() {
-    this.socket = new WebSocket(`ws://localhost:8080/notification/socket`);
+    this.socket = new WebSocket(`ws://localhost:8080/notification/socket?=${localStorage.getItem('auth-token')}`);
     this.handlers = {};
 
     this.socket.onopen = () => {
       console.log("socket opened");
-      this.send({
-        message: 'register-client',
-        data: 'tomm2000'
-      })
     };
 
     this.socket.onclose = () => {
@@ -45,12 +41,12 @@ export class SocketConnection {
           handlers[handler_id](data.data);
         }
       } else {
-        console.log("no handler for message", data.message)
+        console.log(`No handler for message "${data.message}"`)
       }
     }
   }
 
-  setOnMessage(message: string, id: string, callback: (data: any) => void) {
+  setOnMessage(message: string, callback: (data: any) => void, id: string = "default") {
     if(!this.handlers[message]) {
       this.handlers[message] = {};
     }
@@ -87,12 +83,12 @@ export function closeMainSocket() {
   }
 }
 
-export function mainSocketSetHandler(message: string, id: string, handler: MessageHandler) {
+export function mainSocketSetHandler(message: string, handler: MessageHandler, id: string = "default") {
   if(!main_socket) {
     main_socket = new SocketConnection();
   }
 
   if (main_socket) {
-    main_socket.setOnMessage(message, id, handler);
+    main_socket.setOnMessage(message, handler, id);
   }
 }
