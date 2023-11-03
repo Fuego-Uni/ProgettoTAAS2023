@@ -2,41 +2,41 @@
   import ContentPreview from "$lib/components/ContentPreview.svelte";
   import TestBanner from '$lib/assets/testimg.png'
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
+  import { filmStore } from "$lib/store/store";
+  import { onMount } from "svelte";
+  import { get } from "svelte/store";
+  import { getAllFilms, getFilmInfo } from "$lib/film";
+  import type { FilmData } from "$lib/types";
 
   let large_active = 0;
   let small_active = 0;
+
+  let page = 1;
+  //let films: FilmData[] = [];
+  $:{
+   /*  films = get(filmStore);
+    console.log(films) */
+  }
+  onMount(async ()=>{
+      //if(get(filmStore).length == 0) filmStore.set(await getAllFilms(1));
+  })
 </script>
 
 <div class="page">
-  <div class="carousel-wrapper">
-    <ContentCarousel title="featured" items={[
-      {banner: TestBanner, title: "Test Title ma molto lungo", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title lungo", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-    ]} />
+  <div class="carousel-wrapper">  
+    {#await getAllFilms(page) then films1}
+    <ContentCarousel title="LISTA 1" items={films1} on:newpage={()=> page=page+1 }/>
+   {/await}
   </div>
   <div class="carousel-wrapper">
-    <ContentCarousel title="titolo 2" items={[
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-    ]} />
+    {#await getAllFilms(2) then films1}
+    <ContentCarousel title="LISTA 1" items={films1}/>
+   {/await}
   </div>
   <div class="carousel-wrapper">
-    <ContentCarousel title="titolo 3" items={[
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-      // {banner: TestBanner, title: "Test Title", date: "2021", rating_average: 4, rating_personal: 3},
-    ]} />
+    {#await getAllFilms(3) then films1}
+    <ContentCarousel title="LISTA 1" items={films1}/>
+   {/await}
   </div>
 </div>
 
@@ -54,6 +54,7 @@
     gap: var(--gap);
     overflow-x: hidden;
   }
+
 
 // MOBILE
 @media (max-width: 950px) {

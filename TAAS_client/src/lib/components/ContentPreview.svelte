@@ -1,51 +1,50 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-  import Rating from './Rating.svelte';
-  import type { ContentPreviewData } from '$lib/types';
+  import { createEventDispatcher } from "svelte";
+  import Rating from "./Rating.svelte";
+  import type { ContentPreviewData, FilmData } from "$lib/types";
 
-	const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 
-  export let data: ContentPreviewData;
+  export let data: FilmData;
   export let active = false;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="content-preview"
-  class:active
-  on:click={() => dispatch('click')}
->
-  <img src={data.banner} alt="" class="banner">
+<div class="content-preview" class:active on:click={() => dispatch("click")}>
+  <img src={data.backdrop_path} alt="" class="banner" />
   <div class="infobox-wrap">
     <div class="infobox">
       <div class="section title">{data.title}</div>
-      <div class="section date">({data.date})</div>
+      <div class="section date">{data.release_date}</div>
       <div class="section rating">
         <Rating rating_average={4} rating_personal={3} />
-      </div>
+      </div>  
     </div>
   </div>
 </div>
 
 <style lang="scss">
   .content-preview {
-    height: 100%;
-
+    /* scroll-snap-align: start; */ 
+    min-width: 300px;
+    min-height: 300px;
     display: grid;
-    grid-template-rows: 1fr 3rem;
+    grid-template-rows: 1fr 6rem;
     grid-template-columns: 1fr 1fr;
-    &:not(.large) { grid-template-columns: 2fr 1fr; }
+    &:not(.large) {
+      grid-template-columns: 2fr 1fr;
+    }
 
     border-radius: 0.3rem;
-    overflow: hidden;
-    
-    box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.25); 
+
+    box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.25);
 
     transition: all 0.3s ease-in-out;
 
     cursor: pointer;
 
-    .banner {
+    .banner { 
       grid-row: 1 / 3;
       grid-column: 1 / 3;
 
@@ -61,7 +60,9 @@
     }
   }
 
-  .content-preview.active {
+  .content-preview.active { 
+    min-width: 600px;
+    min-height: 450px;
     .infobox-wrap {
       opacity: 100%;
       display: flex;
@@ -85,7 +86,7 @@
 
         color: white;
 
-        background: rgba(35, 34, 40, 0.80);
+        background: rgba(35, 34, 40, 0.8);
         box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.25);
         backdrop-filter: blur(2px);
 
@@ -114,7 +115,7 @@
       }
     }
   }
-  
+
   .content-preview.active {
     aspect-ratio: 5/2;
   }
@@ -122,12 +123,12 @@
     aspect-ratio: 3/2;
   }
 
-// MOBILE
-@media (max-width: 950px) {
-  .content-preview {
-    width: 100%;
-    height: 13rem;
-    aspect-ratio: unset;
+  // MOBILE
+  @media (max-width: 950px) {
+    .content-preview {
+      width: 100%;
+      height: 13rem;
+      aspect-ratio: unset;
+    }
   }
-}
 </style>
