@@ -1,3 +1,4 @@
+import axios from "axios"
 import type { FilmData } from "./types"
 
 const apiKey = '1fdc2c6e1ad61d4f607f73e1f7e179a9'
@@ -37,4 +38,16 @@ export const getAllFilms = async (page: number): Promise<FilmData[]> => {
     vote_average: film.vote_average,
     vote_count: film.vote_count,
   })) 
+}
+
+export const reviewFilm = async (id: number, vote: string, note: string) => {
+  axios.post(
+    'http://localhost:8080/review/add', {
+      filmId: id,
+      vote: vote,
+      note: note
+  }, {}).then((response) => {
+    console.log(response);
+  })
+
 }

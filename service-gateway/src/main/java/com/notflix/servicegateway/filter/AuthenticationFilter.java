@@ -47,10 +47,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
           RestTemplate restTemplate2 = new RestTemplate();
           AuthRequest authRequest = new AuthRequest(user.email, user.name);
           //String authRequestJson = gson.toJson(authRequest);
-
+          System.out.println("================= vado in auth service =================");
           ResponseEntity<String> responseEntity2 = restTemplate2.postForEntity(URL2,
           authRequest, String.class);
-          
+            
           System.out.println("Response: " + responseEntity2.getBody());
         } else {
           throw new RuntimeException("missing cookie header");

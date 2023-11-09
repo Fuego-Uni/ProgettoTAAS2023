@@ -3,6 +3,7 @@
   import { tick, onMount } from "svelte";
   import ContentPreview from "./ContentPreview.svelte";
   import { createEventDispatcher } from "svelte";
+  import { goto } from "$app/navigation";
 
   const dispatch = createEventDispatcher();
 
@@ -37,31 +38,13 @@
   onMount(async () => {
     listElement.addEventListener("scroll", calculateActiveItem);
   });
+
+ 
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="content-carousel">
-  <div class="botton-wrapper">  
-    <div class="button first" on:click={() => dispatch("newpage")}>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"
-        ><path
-          style="fill:#FFFFFF"
-          d="m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z"
-          data-name="Right"
-        /></svg
-      >
-    </div>
-    <div class="button " on:click={() => dispatch("newpage")}>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25"
-        ><path
-          style="fill:#FFFFFF"
-          d="m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z"
-          data-name="Right"
-        /></svg
-      >
-    </div>
-  </div>
   <div class="title">{title}</div>
   <div class="list" bind:this={listElement}>
     {#each items as item, i}
@@ -70,9 +53,10 @@
         active={i == active}
         on:click={() => {
           active = i;
+          goto(`/film/${item.id}`);
         }}
       />
-    {/each} 
+    {/each}
   </div>
 </div>
 
