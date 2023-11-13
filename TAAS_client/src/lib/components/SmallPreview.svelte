@@ -10,7 +10,7 @@
     current_elements = await getAllFilms(1);
     // get only the first 2 elements
     current_elements = current_elements.slice(0, 2);
-    console.log(current_elements);
+    //console.log(current_elements);
   });
 </script>
 

@@ -1,27 +1,36 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { getAllFilms, getFilmInfo, reviewFilm } from "$lib/film";
+  import { getAllFilms, getFilmInfo, reviewFilm, getAllFilmReview } from "$lib/film";
   import { onMount } from "svelte";
-  import type { FilmData } from "$lib/types";
+  import type { FilmData, Review } from "$lib/types";
   import ContentPreview from "$lib/components/ContentPreview.svelte";
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
   import SmallPreview from "$lib/components/SmallPreview.svelte";
+  import Rating from "$lib/components/Rating.svelte";
   export let data: PageData;
-  console.log(data.film_id);
-  let page = 1;
+  
+  let page = 1; 
   let film_id = data.film_id.toString();
+  let vote_average: number;
+  let vote_note = "";
+
+ 
+
+  let review_list: Review[];
+  
   function handleReview() {
-    reviewFilm(Number(data.film_id), "testtesttest", "notenotenotenote");
-  }
+    reviewFilm(Number(data.film_id), vote_average.toString(), vote_note);
+  } 
   let film_info: FilmData;
+  let film_review: Review[];
   onMount(async () => {
     film_info = await getFilmInfo(Number(film_id));
-    console.log(film_info);
-  });
+    film_review =await getAllFilmReview(Number(film_id))
+  }); 
+  $: console.log(film_review)
 </script>
 
 <div class="film_container">
-  <!-- <button on:click={handleReview}> test</button> -->
   <div class="left">
     <div class="top">
       <img
@@ -42,19 +51,46 @@
         <p
           style="
         overflow: hidden;
-        text-overflow: ellipsis;"
+        text-overflow: ellipsis;
+        max-height: 70px;
+        "
         >
           {film_info?.overview}
         </p>
       </div>
       <div class="evaluete" style="">
-        <!--  <h1>Nota</h1>
-        <h1>Nota</h1>
-        <h1>Nota</h1> -->
+        <Rating rating_personal={0} rating_average={vote_average} on:clic_rating={(params)=> {
+          console.log("test",params.detail )
+          vote_average = params.detail;
+          }} />
+        <!-- <input type="text" class="input"> -->
+        <textarea id="message" class="input" name="message" rows="4" cols="50" bind:value={vote_note}></textarea>
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div class="button" on:click={handleReview}>
+          Pubblica
+        </div>
       </div>
     </div>
+    Recensioni
+    <div class="review_container">
 
-    <div class="review_container" />
+        
+        {#await getAllFilmReview(Number(film_id)) then reviews}
+        {#each reviews as rev }
+          <div class="review">
+            <div class="review_top">
+              {rev?.user}
+              {rev?.vote}
+            </div>
+            {rev?.note}
+          </div>
+        {/each}
+      {/await}
+        
+
+   
+    </div>
   </div>
 </div>
 
@@ -62,10 +98,12 @@
   .film_container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    
     justify-content: center;
-    height: 100vh;
+    max-height: 100%;
+    min-height: 100%;
     padding: 6px;
+    
   }
   .left {
     flex: 1.1;
@@ -89,10 +127,11 @@
   .right {
     color: var(--color-ui-text-unfocused);
     flex: 1;
-    height: 100%;
-    width: 100%;
+    max-height: 100%;
+    max-width: 50%;
     display: flex;
     flex-direction: column;
+    gap: 6px;
   }
   .info_container {
     flex: 1;
@@ -102,22 +141,77 @@
     align-items: center;
     .info {
       flex: 1.4;
-      height: 100%;
+      max-height: 100%;
       display: flex;
       flex-direction: column;
       /* justify-content: space-between; */
     }
     .evaluete {
       flex: 1;
-      
       padding: 10px;
+      gap: 10px;
       border-radius: 10px;
-      height: 80%;
+      height: 100%;
       width: 80%;
       background-color: rgba(217, 217, 217, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+
+      .input{
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+        border: none;
+        background-color: rgba(217, 217, 217, 0.15);
+        color: var(--color-ui-text-unfocused);
+        padding: 10px;
+        /* font-size: 20px; */
+        outline: none;
+        text-align: start;
+      }
+      .button{
+        height: 50px;
+        width: 100%;
+        border-radius: 10px;
+        border: none;
+        background-color: var(--color-main-accent);
+        color: white;
+        padding: 10px;
+        font-size: 20px;
+        outline: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
     }
   }
   .review_container {
-    flex: 1;
+      flex: 1;
+      height: 100%;
+      
+      display: flex;
+      flex-direction: row;
+      gap: 10px;      
+      
+      overflow-y: scroll;
+      
+      .review{
+        height: 300px;
+        min-width: 150px;
+        border-radius: 10px;
+        border-radius: 6px;
+        background-color: rgba(217, 217, 217, 0.15);
+        color: var(--color-ui-text-unfocused);
+        padding: 10px;
+        /* font-size: 20px; */
+        outline: none;
+        text-align: start;
+        .review_top{
+          display: flex;
+          justify-content: space-between;
+        }
+    }
   }
 </style>

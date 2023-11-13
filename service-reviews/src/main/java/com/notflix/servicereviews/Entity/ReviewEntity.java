@@ -1,7 +1,9 @@
 package com.notflix.servicereviews.Entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "reviews")
 public class ReviewEntity {

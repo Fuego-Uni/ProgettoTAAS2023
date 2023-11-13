@@ -1,9 +1,7 @@
 import axios from "axios"
-import type { FilmData } from "./types"
+import type { FilmData,Review } from "./types"
 
 const apiKey = '1fdc2c6e1ad61d4f607f73e1f7e179a9'
-
-
 
 export const getFilmInfo = async (id: number): Promise<FilmData> => {
   const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=it-US`)
@@ -50,4 +48,29 @@ export const reviewFilm = async (id: number, vote: string, note: string) => {
     console.log(response);
   })
 
+}
+
+export const getAllFilmReview = async (id: number): Promise<Review[]> => {
+  
+  return axios.get(
+    'http://localhost:8080/review/get', {
+    params: {
+      filmId: id,
+    },
+  }).then((data) => {
+    // parse all the data and return a list of Review
+    console.log(data.data)
+    return data.data.map((review: Review) => ({
+      user: review.user.name,
+      vote: review.vote,
+      note: review.note
+    })
+
+    )
+
+
+  }) 
+
+
+  
 }

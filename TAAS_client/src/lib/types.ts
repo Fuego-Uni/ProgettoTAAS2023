@@ -21,3 +21,9 @@ export type FilmData = {
   vote_average: number,
   vote_count: number,
 }
+
+export type Review = {
+  vote: number;
+  note: string;
+  user: any;
+}

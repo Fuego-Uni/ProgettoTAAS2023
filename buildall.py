@@ -42,6 +42,8 @@ for d in f:
     os.system('./mvnw package')
   else:
     os.system('mvn package')
+    """ docker build --rm -t 'name' . """
+  os.system(f'docker rmi  {d} .')
   os.system(f'docker build -t {d} .')
   os.chdir('..')
 

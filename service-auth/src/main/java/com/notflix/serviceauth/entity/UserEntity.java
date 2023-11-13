@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 @Table(name = "user_entity")
 public class UserEntity {
   @Id
+  @Column(name = "email")
   private String email;
 
   private String name;
