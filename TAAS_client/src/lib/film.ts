@@ -6,6 +6,7 @@ const apiKey = '1fdc2c6e1ad61d4f607f73e1f7e179a9'
 export const getFilmInfo = async (id: number): Promise<FilmData> => {
   const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=it-US`)
   const data = await response.json()
+  console.log(data)
   const photo = {poster_path: data.poster_path, backdrop_path: data.backdrop_path}
 
   const imageUtr = `https://image.tmdb.org/t/p/w500${photo.poster_path}`

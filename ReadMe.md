@@ -33,3 +33,10 @@ Access to resources:
 - localhost:8081/demo
 
 - con uso di gateway: localhost:8080/demo
+
+TODO:
+gestire se hai gia recensito il film
+mostrare solo i film consigliati
+rework soket
+css film
+chat service

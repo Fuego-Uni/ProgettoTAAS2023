@@ -7,6 +7,7 @@
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
   import SmallPreview from "$lib/components/SmallPreview.svelte";
   import Rating from "$lib/components/Rating.svelte";
+  import { mainSocketSetHandler } from "$lib/SocketConnection";
   export let data: PageData;
   
   let page = 1; 
@@ -14,20 +15,25 @@
   let vote_average: number;
   let vote_note = "";
 
- 
-
-  let review_list: Review[];
+// !TODO: restore della tua recensione se ce
   
   function handleReview() {
     reviewFilm(Number(data.film_id), vote_average.toString(), vote_note);
   } 
   let film_info: FilmData;
-  let film_review: Review[];
+  let film_review: Review[]= [];
   onMount(async () => {
     film_info = await getFilmInfo(Number(film_id));
     film_review =await getAllFilmReview(Number(film_id))
+
+    mainSocketSetHandler("notification",async (data) => {
+      console.log("film_handler", data );
+      // refresh film review
+      film_review = await getAllFilmReview(Number(film_id))
+      // TODO: show notification  
+    }, "film" )
   }); 
-  $: console.log(film_review)
+  $: console.log(film_review, "film_review id", film_id)
 </script>
 
 <div class="film_container">
@@ -52,7 +58,7 @@
           style="
         overflow: hidden;
         text-overflow: ellipsis;
-        max-height: 70px;
+        <!-- max-height: 70px; -->
         "
         >
           {film_info?.overview}
@@ -76,8 +82,8 @@
     <div class="review_container">
 
         
-        {#await getAllFilmReview(Number(film_id)) then reviews}
-        {#each reviews as rev }
+        
+        {#each film_review as rev }
           <div class="review">
             <div class="review_top">
               {rev?.user}
@@ -86,7 +92,7 @@
             {rev?.note}
           </div>
         {/each}
-      {/await}
+      
         
 
    
@@ -107,7 +113,7 @@
   }
   .left {
     flex: 1.1;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;

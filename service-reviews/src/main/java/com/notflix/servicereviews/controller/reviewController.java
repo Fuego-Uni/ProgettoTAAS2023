@@ -87,7 +87,10 @@ public class reviewController {
     ReviewEntity review = new ReviewEntity(user, film, voteInt, note);
 
     // save
+    
     reviewEntityRepo.save(review);
+    // sent to rabbitmq
+    rabbitMessageSender.sendNotification("default", "New review", "New review", email);
 
     return request.getHeader("Authorization");
   }
@@ -98,7 +101,7 @@ public ResponseEntity<String> getReviews(@RequestParam Long filmId) {
 
     List<ReviewEntity> reviews = reviewEntityRepo.findByFilmFilmId(filmId);
     // TODO: filter for friends
-
+    
     
     String reviewJson = "";
     if (!reviews.isEmpty()) {
@@ -112,6 +115,7 @@ public ResponseEntity<String> getReviews(@RequestParam Long filmId) {
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         try {
             reviewJson = objectMapper.writeValueAsString(reviews);
+            System.out.println(reviewJson);
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

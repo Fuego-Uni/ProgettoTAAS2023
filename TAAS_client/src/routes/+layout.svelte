@@ -8,6 +8,9 @@
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { mainSocketSetHandler } from '$lib/SocketConnection';
+
+  
 
   onMount(() => {
     initiateAxios();
@@ -16,6 +19,11 @@
     if(localStorage.getItem('auth-token') === null && !url.includes('auth/signup')) {
       goto('auth/signup')
     }
+
+    mainSocketSetHandler("notification", (data) => {
+      console.log("layout_handler", data );
+      // TODO: show notification
+    }, "layout" )
   });
 </script>
 
