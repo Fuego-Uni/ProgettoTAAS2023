@@ -1,0 +1,10 @@
+package com.notflix.servicechat.repo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.notflix.servicechat.Entity.ChatEntity;
+
+public interface ChatEntityRepo extends JpaRepository<ChatEntity, Long> {
+
+}
+
