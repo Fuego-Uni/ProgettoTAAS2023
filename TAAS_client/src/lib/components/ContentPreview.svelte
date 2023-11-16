@@ -1,11 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import Rating from "./Rating.svelte";
-  import type { ContentPreviewData, FilmData } from "$lib/types";
+  import type { ContentPreviewData, MediaData } from "$lib/types";
 
   const dispatch = createEventDispatcher();
 
-  export let data: FilmData;
+  export let data: MediaData;
   export let active = false;
 </script>
 
@@ -26,9 +26,9 @@
 
 <style lang="scss">
   .content-preview {
-    /* scroll-snap-align: start; */ 
-    min-width: 300px;
-    min-height: 300px;
+    width: 15rem;
+    height: 100%;
+
     display: grid;
     grid-template-rows: 1fr 6rem;
     grid-template-columns: 1fr 1fr;
@@ -61,8 +61,8 @@
   }
 
   .content-preview.active { 
-    min-width: 600px;
-    min-height: 450px;
+    width: 25rem;
+
     .infobox-wrap {
       opacity: 100%;
       display: flex;

@@ -11,7 +11,8 @@ export type UserInfo = {
   email: string,
   role: string,
 }
-export type FilmData = {
+
+export type MediaData = {
   id: number,
   title: string,
   overview: string,

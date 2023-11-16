@@ -1,121 +1,96 @@
 <script lang="ts">
-  import type { ContentPreviewData, FilmData } from "$lib/types";
+  import type { ContentPreviewData, MediaData } from "$lib/types";
   import { tick, onMount } from "svelte";
   import ContentPreview from "./ContentPreview.svelte";
   import { createEventDispatcher } from "svelte";
   import { goto } from "$app/navigation";
 
   const dispatch = createEventDispatcher();
+  const slots = 5
 
-  export let items: FilmData[];
+  export let items: MediaData[];
   export let title: string;
 
-  let active = 0;
-  let listElement: any;
+  let offset = 0;
 
-  async function calculateActiveItem() {
-    await tick(); // Wait for the next microtask
-    const children = Array.from(listElement.children);
-    const midpoint = listElement.scrollLeft + listElement.clientWidth / 2;
-    let index = 0;
-    let itemStartX = 0;
-    if (listElement.scrollLeft === 0) {
-      active = 0;
-      return;
-    }
-
-    for (let i = 0; i < children.length; i++) {
-      const itemWidth = children[i].offsetWidth;
-      if (itemStartX + itemWidth > midpoint) {
-        index = i;
-        break;
-      }
-      itemStartX += itemWidth;
-    }
-
-    active = index;
-  }
   onMount(async () => {
-    listElement.addEventListener("scroll", calculateActiveItem);
+    // listElement.addEventListener("scroll", calculateActiveItem);
   });
-
- 
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="content-carousel">
-  <div class="title">{title}</div>
-  <div class="list" bind:this={listElement}>
+  <div class="elements" style={`transform: translateX(-${offset*16}rem)`}>
     {#each items as item, i}
       <ContentPreview
+        active={i == offset}
         data={item}
-        active={i == active}
-        on:click={() => {
-          active = i;
-          goto(`/film/${item.id}`);
-        }}
+        on:click={() => {}}
       />
     {/each}
   </div>
+
+  <div class="arrow left" on:click={() => {
+    offset = Math.max(offset - 1, 0)
+    // console.log(offset)
+  }} />
+  <div class="arrow right" on:click={() => {
+    offset = Math.min(offset + 1, items.length - slots)
+    // console.log(offset)
+  }} />
 </div>
 
 <style lang="scss">
-  .botton-wrapper{
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 7rem); 
-    z-index: 0;
-    pointer-events: none;
-  }
-  .first {
-    svg {
-      transform: rotate(180deg);
-    }
-  }
-  .button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 50px;
-    height: 600px;
-    /*  border: solid red 3px; */
-    box-sizing: border-box;
-    cursor: pointer;
-    svg {
-      width: 50px;
-      height: 100px;
-      object-fit: cover;
-    }
-  }
   .content-carousel {
-    display: flex;
-    flex-direction: column;
+    --arrow-width: 1rem;
 
-    gap: 0.5rem;
-    color: var(--color-ui-text-focused);
-    font-size: 1.5rem;
+    display: grid;
+    grid-template-columns: var(--arrow-width) calc(25rem) var(--arrow-width) 1fr;
+    grid-template-rows: 100%;
 
-    .title {
-      text-shadow: rgba(255, 255, 255, 0.6) 0px 0px 20%;
-    }
+    overflow: hidden;
+    height: 100%;
 
-    .list {
+    .arrow {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+
+      background-color: red;
+
+      z-index: 1;
+    }
+
+    .elements {
+      grid-column: 1 / 5;
+      grid-row: 1;
+      height: 100%;
+      width: fit-content;
+
+      display: flex;
+      overflow: hidden;
+
+      padding: 0 var(--arrow-width) 0 var(--arrow-width);
       gap: 1rem;
-      scroll-snap-type: x mandatory;
-      overflow-x: scroll;
-      min-height: 600px;
+
+      transition: all 0.3s ease-in-out;
+    }
+
+    .arrow.left {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .arrow.right {
+      grid-column: 3;
+      grid-row: 1;
     }
   }
 
-  // MOBILE
-  @media (max-width: 950px) {
-    .content-carousel {
-      .list {
-        flex-direction: column;
-      }
-    }
-  }
+// MOBILE
+@media (max-width: 950px) {
+}
 </style>
