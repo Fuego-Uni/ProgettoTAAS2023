@@ -16,12 +16,9 @@ public class RabbitMessageSender {
    * Send a notification to the notification service
    * @param route The route to send the notification to (e.g. "group.create")
    */
-  public void sendNotification(String route, String message, String data, String... users) {
+  public void sendNotification(String message, String data, String... users) {
     NotificationMessage notificationMessage = new NotificationMessage(users, message, data);
-
-    if(route == null || route.isEmpty()) route = "default";
-
-    String routingKey = "notification." + route;
+    String routingKey = "notification";
 
     System.out.println("Sending notification to " + routingKey);
 

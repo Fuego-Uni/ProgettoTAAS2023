@@ -18,7 +18,7 @@ public class RabbitMessageReceiver {
 
   @Bean Queue notificationQueue() { return new Queue("notification_queue"); }
 
-  @Bean Binding groupUpdateBinding() { return BindingBuilder.bind(notificationQueue()).to(Config.notflixExchange()).with("notification.default");        }
+  @Bean Binding groupUpdateBinding() { return BindingBuilder.bind(notificationQueue()).to(Config.notflixExchange()).with("notification");        }
 
   @RabbitListener(queues = "notification_queue")
   public void notificationMessageReceive(String _message) {
@@ -27,10 +27,11 @@ public class RabbitMessageReceiver {
     try {
       NotificationMessage notificationMessage = gson.fromJson(_message, NotificationMessage.class);
   
+      String message = notificationMessage.getMessage();
       String data = notificationMessage.getData();
       String[] users = notificationMessage.getUsers();
   
-      SocketMessage socketMessage = new SocketMessage("notification", data);
+      SocketMessage socketMessage = new SocketMessage(message, data);
 
       if(users.length == 0) {
         WebSocketConfig.messageHandler.sendMessageToAll(socketMessage);

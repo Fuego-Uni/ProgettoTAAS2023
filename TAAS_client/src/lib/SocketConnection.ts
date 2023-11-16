@@ -46,12 +46,31 @@ export class SocketConnection {
     }
   }
 
-  setOnMessage(message: string, callback: (data: any) => void, id: string = "default") {
+  setOnMessage(message: string, callback: (data: any) => void): string {
     if(!this.handlers[message]) {
       this.handlers[message] = {};
     }
 
+    const id = Math.random().toString(36).substring(7);
+
     this.handlers[message][id] = callback;
+
+    return id;
+  }
+
+  setOnceMessage(message: string, callback: (data: any) => void): string {
+    const id = this.setOnMessage(message, (data) => {
+      callback(data);
+      this.removeMessageHandler(message, id);
+    });
+
+    return id;
+  }
+
+  removeMessageHandler(message: string, id: string) {
+    if(this.handlers[message]) {
+      delete this.handlers[message][id];
+    }
   }
 
   send(message: SocketMessage) {
@@ -83,12 +102,24 @@ export function closeMainSocket() {
   }
 }
 
-export function mainSocketSetHandler(message: string, handler: MessageHandler, id: string = "default") {
+export function mainSocketSetHandler(message: string, handler: MessageHandler): string {
+  if(!main_socket) {
+    main_socket = new SocketConnection();
+  }
+  
+  return main_socket.setOnMessage(message, handler);
+}
+
+export function mainSocketSetOnceHandler(message: string, handler: MessageHandler): string {
   if(!main_socket) {
     main_socket = new SocketConnection();
   }
 
-  if (main_socket) {
-    main_socket.setOnMessage(message, handler, id);
+  return main_socket.setOnMessage(message, handler);
+}
+
+export function mainSocketRemoveHandler(message: string, id: string) {
+  if(main_socket) {
+    main_socket.removeMessageHandler(message, id);
   }
 }

@@ -90,7 +90,7 @@ public class reviewController {
     
     reviewEntityRepo.save(review);
     // sent to rabbitmq
-    rabbitMessageSender.sendNotification("default", "New review", "New review", email);
+    rabbitMessageSender.sendNotification("default", "New review", email);
 
     return request.getHeader("Authorization");
   }

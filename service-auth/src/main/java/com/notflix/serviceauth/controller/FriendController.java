@@ -52,8 +52,8 @@ public class FriendController {
     userEntity.getFriends().add(friendEntity);
     userEntityRepository.save(userEntity);
 
-    rabbitMessageSender.sendNotification(null, "friend-added", friend, user);
-    rabbitMessageSender.sendNotification(null, "added-as-friend", user, friend);
+    rabbitMessageSender.sendNotification("friend-added", friend, user);
+    rabbitMessageSender.sendNotification("added-as-friend", user, friend);
 
     return ResponseEntity.ok().body(gson.toJson("Success"));
   }

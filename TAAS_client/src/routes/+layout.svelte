@@ -10,8 +10,6 @@
   import { page } from '$app/stores';
   import { mainSocketSetHandler } from '$lib/SocketConnection';
 
-  
-
   onMount(() => {
     initiateAxios();
 

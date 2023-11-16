@@ -19,9 +19,7 @@ public class RabbitMessageSender {
   public void sendNotification(String route, String message, String data, String... users) {
     NotificationMessage notificationMessage = new NotificationMessage(users, message, data);
 
-    if(route == null || route.isEmpty()) route = "default";
-
-    String routingKey = "notification." + route;
+    String routingKey = "notification";
 
     System.out.println("Sending notification to " + routingKey);
 
