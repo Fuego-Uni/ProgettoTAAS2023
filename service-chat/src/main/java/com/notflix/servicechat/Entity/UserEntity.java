@@ -59,4 +59,9 @@ public class UserEntity {
   public List<UserEntity> getFriends() {
     return friends;
   }
+
+public Long getId() {
+    return null;
+}
+
 }

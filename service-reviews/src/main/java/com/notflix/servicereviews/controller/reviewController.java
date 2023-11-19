@@ -126,5 +126,5 @@ public ResponseEntity<String> getReviews(@RequestParam Long filmId) {
         // Return a 404 Not Found status code if the review is not found
         return new ResponseEntity<>("Review not found", HttpStatus.NOT_FOUND);
     }
-  }
+  } 
 }

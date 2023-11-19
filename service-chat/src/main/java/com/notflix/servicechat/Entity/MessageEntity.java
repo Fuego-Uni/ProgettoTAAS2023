@@ -29,4 +29,20 @@ public class MessageEntity {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
+    // set
+    public void setId(Long id) {
+        this.id = id;
+    }
+    // set message
+    public void setMessage(String message) {
+        this.content = message;
+    }
+    // set chatid
+    public void setChatId(ChatEntity chatId) {
+        this.chat = chatId;
+    }
+    // set user
+    public void setUser(UserEntity user) {
+        this.sender = user;
+    }
 }
