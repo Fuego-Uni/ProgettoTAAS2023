@@ -60,8 +60,8 @@ public class UserEntity {
     return friends;
   }
 
-public Long getId() {
-    return null;
+public String getId() {
+    return email;
 }
 
 }

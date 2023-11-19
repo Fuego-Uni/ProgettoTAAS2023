@@ -2,10 +2,12 @@ package com.notflix.servicechat.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.notflix.servicechat.Entity.MessageEntity;
+import java.util.List;
+
 
 public interface MessageEntityRepo extends JpaRepository<MessageEntity, Long> {
-    // return all message by chat
-    Iterable<MessageEntity> findAllByChatId(Long chatId);
+    
+    List<MessageEntity> findAllByChat_Id(Long chatId);
 
 }
 

@@ -16,6 +16,7 @@ import com.notflix.servicechat.repo.UserEntityRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.swing.text.html.Option;
@@ -91,7 +92,7 @@ public class ChatController {
       return ResponseEntity.badRequest().body("Chat not found");
     }
 
-    Iterable<MessageEntity> messages = messageEntityRepo.findAllByChatId(chat.get().getId());
+    List<MessageEntity> messages = messageEntityRepo.findAllByChat_Id(chat.get().getId());
     for (MessageEntity message : messages) {
       System.out.println(message);
       Hibernate.initialize(messages);
@@ -144,8 +145,8 @@ public class ChatController {
     String email = request.getHeader("email");
 
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
-    Optional<ChatEntity> chat = chatEntityRepo.findByUser1(user.get().getId());
-    Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2(user.get().getId());
+    Optional<ChatEntity> chat = chatEntityRepo.findByUser1_Id(user.get().getId());
+    Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2_Id(user.get().getId());
     if (!chat.isPresent() && !chat1.isPresent()) {
       return ResponseEntity.badRequest().body("Chat not found");
     }
