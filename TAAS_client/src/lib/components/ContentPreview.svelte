@@ -28,21 +28,25 @@
   .content-preview {
     width: 15rem;
     height: 100%;
+    aspect-ratio: 3/2;
 
     display: grid;
     grid-template-rows: 1fr 6rem;
     grid-template-columns: 1fr 1fr;
-    &:not(.large) {
-      grid-template-columns: 2fr 1fr;
-    }
-
-    border-radius: 0.3rem;
-
-    box-shadow: 10px 10px 10px 0px rgba(0, 0, 0, 0.25);
 
     transition: all 0.3s ease-in-out;
-
     cursor: pointer;
+    border-radius: 0.3rem;
+    overflow: hidden;
+
+    margin: 0 1rem;
+
+    &.active {
+      aspect-ratio: 5/2;
+      width: 25rem;
+      border-radius: 0;
+      margin: 0 1.5rem;
+    }
 
     .banner { 
       grid-row: 1 / 3;
@@ -58,12 +62,8 @@
       display: none;
       opacity: 0;
     }
-  }
 
-  .content-preview.active { 
-    width: 25rem;
-
-    .infobox-wrap {
+    &.active > .infobox-wrap {
       opacity: 100%;
       display: flex;
       height: 100%;
@@ -79,8 +79,6 @@
         display: grid;
         height: 100%;
         width: 100%;
-
-        border-radius: 0 0 0.3rem 0.3rem;
 
         padding: 0.5rem;
 
@@ -114,13 +112,6 @@
         }
       }
     }
-  }
-
-  .content-preview.active {
-    aspect-ratio: 5/2;
-  }
-  .content-preview:not(.active) {
-    aspect-ratio: 3/2;
   }
 
   // MOBILE

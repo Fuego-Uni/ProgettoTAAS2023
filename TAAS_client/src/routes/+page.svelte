@@ -7,27 +7,15 @@
   import { get } from "svelte/store";
   import { getAllFilms, getFilmInfo } from "$lib/film";
 
-  let large_active = 0;
-  let small_active = 0;
-
-  let page = 1;
-  //let films: FilmData[] = [];
-  $: {
-    /*  films = get(filmStore);
-    console.log(films) */
-  }
-  onMount(async () => {
-    //if(get(filmStore).length == 0) filmStore.set(await getAllFilms(1));
-  });
+  
 </script>
 
 <div class="page">
   <!-- <div class="carousel-wrapper">   -->
-  {#await getAllFilms(page) then films1}
+  {#await getAllFilms(1) then films1}
     <ContentCarousel
       title="LISTA 1"
       items={films1}
-      on:newpage={() => (page = page + 1)}
     />
   {/await}
   <!-- </div> -->
