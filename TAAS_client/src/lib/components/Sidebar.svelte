@@ -6,6 +6,8 @@
     mainSocketSetHandler,
   } from "$lib/SocketConnection";
   import { onMount } from "svelte";
+  import { addMessagetToChat, getChat, getMessageByChatId } from "$lib/chat";
+  import { goto } from "$app/navigation";
 
   async function testRequest() {
     axios.get("http://localhost:8080/review/hello").then((res) => {
@@ -37,6 +39,24 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="sidebar">
+  <div
+    class="user-ui ui-interactive"
+    on:click={() => {
+      goto("/auth/signup");
+    }}
+  >
+    LOGIN
+  </div>
+  <div
+    class="user-ui ui-interactive"
+    on:click={() => {
+      //getChat();
+      //getMessageByChatId("1");
+      addMessagetToChat({ chat_id: "1", message: "ciao ciao ciao caio" });
+    }}
+  >
+    test chat
+  </div>
   <div class="user-ui ui-interactive" on:click={addFriend}>add friend</div>
   <div
     class="user-ui ui-interactive"

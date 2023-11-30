@@ -3,6 +3,8 @@ package com.notflix.serviceauth.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +13,7 @@ public class UserEntity {
   @Id
   @Column(name = "email")
   private String email;
+
 
   private String name;
 
@@ -21,11 +24,8 @@ public class UserEntity {
 
   @ManyToMany
   @JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_email"), inverseJoinColumns = @JoinColumn(name = "friend_email") )
+  @JsonIgnore
   private List<UserEntity> friends = new ArrayList<>();
-
-  public void setName(String name) {
-    this.name = name;
-  }
 
   public void setEmail(String email) {
     this.email = email;
@@ -58,4 +58,13 @@ public class UserEntity {
   public List<UserEntity> getFriends() {
     return friends;
   }
+
+  public String getId() {
+    return email;
+  }
+  // set name
+  public void setName(String name) {
+    this.name = name;
+  }
+
 }

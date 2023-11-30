@@ -9,6 +9,12 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: chat
+          uri: lb://service-chat
+          predicates:
+            - Path=/chat/**
+          filters:
+            - AuthenticationFilter
         - id: review
           uri: lb://service-reviews
           predicates:

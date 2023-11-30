@@ -1,4 +1,4 @@
-package com.notflix.servicechat.Entity;
+package com.notflix.serviceauth.entity;
 
 import java.util.List;
 

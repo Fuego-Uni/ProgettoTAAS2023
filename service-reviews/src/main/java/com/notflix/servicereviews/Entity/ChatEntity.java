@@ -1,4 +1,4 @@
-package com.notflix.servicechat.Entity;
+package com.notflix.servicereviews.Entity;
 
 import java.util.List;
 

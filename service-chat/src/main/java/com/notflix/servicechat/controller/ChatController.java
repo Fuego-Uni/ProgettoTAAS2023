@@ -16,6 +16,7 @@ import com.notflix.servicechat.repo.UserEntityRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -56,11 +58,14 @@ public class ChatController {
 
   @PostMapping("/add/message")
   public ResponseEntity<String> hello(HttpServletRequest request, @RequestBody String body) {
-    String email = request.getHeader("email");
+    String email = request.getHeader("Authorization");
 
     JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
     String message = bodyJson.get("message").toString();
     String chatIdString = bodyJson.get("chatId").getAsString();
+
+    System.out.println("==============" + chatIdString);
+    System.out.println("==============" + message);
 
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
     // search chat
@@ -76,31 +81,46 @@ public class ChatController {
       messageEntity.setChatId(chat.get());
       messageEntity.setMessage(message);
       messageEntity.setUser(user.get());
+      messageEntity.setTimestamp(new java.util.Date());
+      System.out.println("================SALVO NEL DB=====================" + messageEntity.toString());
       messageEntityRepo.save(messageEntity);
+      return ResponseEntity.ok().body("Message sent");
+    }else{
+      return ResponseEntity.badRequest().body("Message not sent");
     }
     /* rabbitMessageSender.sendMessage(gson.toJson(body), "chat"); */
-    return ResponseEntity.ok().body("Message sent");
+
+    
   }
 
   @GetMapping("/get/message")
-  public ResponseEntity<String> getMessage(HttpServletRequest request,  @RequestBody String body) {
-    JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
+  public ResponseEntity<String> getMessage(HttpServletRequest request,  @RequestParam String chat_id) {
 
-    String chatIdString = bodyJson.get("chatId").getAsString();
+    String chatIdString = chat_id;
+    System.out.println("-=========================" + chatIdString);
     Optional<ChatEntity> chat = chatEntityRepo.findById(Long.parseLong(chatIdString));
     if (!chat.isPresent()) {
       return ResponseEntity.badRequest().body("Chat not found");
     }
 
     List<MessageEntity> messages = messageEntityRepo.findAllByChat_Id(chat.get().getId());
+    List<MessageType> messageString = new ArrayList<MessageType>();
     for (MessageEntity message : messages) {
-      System.out.println(message);
-      Hibernate.initialize(messages);
+      System.out.println("MESSAGGIO");
+      Hibernate.initialize(message);
+      MessageType messageString1 = new MessageType(message.getMessage(), message.getChatId().getId().toString(),
+          message.getUser().getEmail(), message.getUser().getName(), message.getTimestamp());
+      messageString.add(messageString1);
     }
-
+    System.out.println("===================qui==================");
+  
+    for( MessageType message : messageString){
+      System.out.println(message.toString());
+    }
     JsonObject responseJson = new JsonObject();
     responseJson.addProperty("message", "Messages found");
-    responseJson.addProperty("messages", gson.toJson(messages));
+    responseJson.addProperty("messages", gson.toJson(messageString));
+    System.out.println("===RESPONSE JSON=======" + responseJson);
     return ResponseEntity.ok().body(gson.toJson(responseJson));
   }
 
@@ -142,8 +162,8 @@ public class ChatController {
   
   @GetMapping("/get/chat")
   public ResponseEntity<String> getChat(HttpServletRequest request) {
-    String email = request.getHeader("email");
-
+    String email = request.getHeader("Authorization");
+    System.out.println("------------" + email);
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
     Optional<ChatEntity> chat = chatEntityRepo.findByUser1_Id(user.get().getId());
     Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2_Id(user.get().getId());

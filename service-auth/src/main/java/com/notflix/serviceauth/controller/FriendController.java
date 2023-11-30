@@ -6,7 +6,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.notflix.serviceauth.entity.UserEntity;
-import com.notflix.serviceauth.entity.UserRole;
+
 import com.notflix.serviceauth.messages.RabbitMessageSender;
 import com.notflix.serviceauth.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;

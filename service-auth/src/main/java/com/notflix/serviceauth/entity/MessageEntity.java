@@ -1,7 +1,7 @@
-package com.notflix.servicechat.Entity;
+package com.notflix.serviceauth.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import java.util.Date;
 
@@ -52,29 +52,5 @@ public class MessageEntity {
     // set user
     public void setUser(UserEntity user) {
         this.sender = user;
-    }
-    // get message
-    public String getMessage() {
-        return content;
-    }
-    // get chatid
-    public ChatEntity getChatId() {
-        return chat;
-    }
-    // get user
-    public UserEntity getUser() {
-        return sender;
-    }
-    // get id
-    public Long getId() {
-        return id;
-    }
-    // get date
-    public Date getTimestamp() {
-        return timestamp;
-    }
-    //set Date
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
     }
 }

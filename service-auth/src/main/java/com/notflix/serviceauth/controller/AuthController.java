@@ -27,7 +27,7 @@ public class AuthController {
     System.out.println(userdata);
     String email = userdata.email;
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
-
+    
     if (user.isEmpty()) {
       var newUser = new UserEntity();
       newUser.setEmail(email);

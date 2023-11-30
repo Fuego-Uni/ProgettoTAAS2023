@@ -3,6 +3,8 @@ package com.notflix.servicechat.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -22,11 +24,8 @@ public class UserEntity {
 
   @ManyToMany
   @JoinTable(name = "user_friends", joinColumns = @JoinColumn(name = "user_email"), inverseJoinColumns = @JoinColumn(name = "friend_email") )
+  @JsonIgnore
   private List<UserEntity> friends = new ArrayList<>();
-
-  public void setName(String name) {
-    this.name = name;
-  }
 
   public void setEmail(String email) {
     this.email = email;

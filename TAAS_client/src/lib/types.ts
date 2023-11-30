@@ -28,3 +28,8 @@ export type Review = {
   note: string;
   user: any;
 }
+
+export type MessageType = {
+  message: string;
+  chat_id: string;
+}
