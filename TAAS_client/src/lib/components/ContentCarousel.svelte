@@ -50,7 +50,7 @@
     display: grid;
     grid-template-columns: 1.5rem 25rem 1.5rem 1fr;
     grid-template-rows: 1rem 1fr;
-
+    flex-wrap: wrap;
     overflow: hidden;
     min-height: 15rem;
 

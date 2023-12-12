@@ -11,4 +11,6 @@ export function setAuthenticationToken(token: string | null) {
 
 export function initiateAxios() {
   axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('auth-token')}`
+  axios.defaults.headers.common['Content-Type'] = 'application/json'
+
 }

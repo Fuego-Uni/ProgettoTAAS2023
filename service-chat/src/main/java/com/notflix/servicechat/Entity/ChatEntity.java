@@ -25,6 +25,9 @@ public class ChatEntity {
     @JsonManagedReference
     private List<MessageEntity> messages;
 
+   /*  @Column(name = "chat_name")
+    private String chatName; */
+
     // set user 1
     public void setUser1(UserEntity user1) {
         this.user1 = user1;
@@ -36,5 +39,13 @@ public class ChatEntity {
     // getid
     public Long getId() {
         return id;
+    }
+    // get user 1
+    public UserEntity getUser1() {
+        return user1;
+    }
+    // get user 2
+    public UserEntity getUser2() {
+        return user2;
     }
 }

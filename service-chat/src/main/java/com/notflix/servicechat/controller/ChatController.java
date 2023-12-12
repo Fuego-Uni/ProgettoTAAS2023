@@ -165,6 +165,9 @@ public class ChatController {
     String email = request.getHeader("Authorization");
     System.out.println("------------" + email);
     Optional<UserEntity> user = userEntityRepository.findByEmail(email);
+
+
+    
     Optional<ChatEntity> chat = chatEntityRepo.findByUser1_Id(user.get().getId());
     Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2_Id(user.get().getId());
     if (!chat.isPresent() && !chat1.isPresent()) {
@@ -174,18 +177,24 @@ public class ChatController {
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat.get().getId().toString());
+      responseJson.addProperty("user1", chat.get().getUser1().getEmail());
+      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
-    if(chat.isPresent()){
+    if(chat.isPresent()){ 
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat.get().getId().toString());
+      responseJson.addProperty("user1", chat.get().getUser1().getEmail());
+      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
     if(chat1.isPresent()){
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat1.get().getId().toString());
+      responseJson.addProperty("user2", chat1.get().getUser2().getEmail());
+      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
     return ResponseEntity.ok().body("Chat found");

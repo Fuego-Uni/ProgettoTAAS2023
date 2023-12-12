@@ -10,11 +10,20 @@ export const addChat = async (user2_email: string): Promise<string> => {
         });
 }
 
-export const getChat = async (): Promise<string> => {
-    return axios.get('http://localhost:8080/chat/get/chat')
+export const getChat = async (): Promise<any> => {
+    return axios.get('http://localhost:8080/chat/get/chat', {
+        validateStatus: (status) => true,
+        headers: {
+            'content-type': 'application/json',
+        }
+    })
         .then((response) => {
             console.log(response.data);
             return response.data;
+        })
+        .catch((error) => {
+            console.error(error);
+            throw error;
         });
 }
 

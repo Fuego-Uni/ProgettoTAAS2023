@@ -29,7 +29,6 @@
     width: 15rem;
     height: 100%;
     aspect-ratio: 3/2;
-
     display: grid;
     grid-template-rows: 1fr 6rem;
     grid-template-columns: 1fr 1fr;

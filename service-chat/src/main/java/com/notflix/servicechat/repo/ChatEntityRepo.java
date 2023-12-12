@@ -2,6 +2,7 @@ package com.notflix.servicechat.repo;
 
 import java.util.Optional;
 
+import org.apache.hc.client5.http.auth.KerberosConfig.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.notflix.servicechat.Entity.ChatEntity;

@@ -52,10 +52,11 @@
     on:click={() => {
       //getChat();
       //getMessageByChatId("1");
-      addMessagetToChat({ chat_id: "1", message: "ciao ciao ciao caio" });
+      //addMessagetToChat({ chat_id: "1", message: "ciao ciao ciao caio" });
+      goto("/chat");
     }}
   >
-    test chat
+    CHAT
   </div>
   <div class="user-ui ui-interactive" on:click={addFriend}>add friend</div>
   <div
