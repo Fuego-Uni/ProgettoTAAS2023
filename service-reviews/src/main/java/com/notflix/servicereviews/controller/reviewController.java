@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +76,12 @@ public class ReviewController {
     // save
     reviewEntityRepo.save(review);
 
-    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/friend/all", user);
+    // friend is a list of user objects, {email: "email", name: "name"}
+    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
+
+    for (int i = 0; i < friends.size(); i++) {
+      System.out.println(friends.get(i));
+    }
 
     friends.add(user);
     String[] friendsArray = friends.toArray(new String[0]);
@@ -93,7 +99,8 @@ public class ReviewController {
     List<ReviewEntity> reviews = reviewEntityRepo.findByFilmId(mediaId);
 
     // filter reviews by friends
-    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/friend/all", user);
+    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
+    
     friends.add(user);
 
     for (int i = 0; i < reviews.size(); i++) {

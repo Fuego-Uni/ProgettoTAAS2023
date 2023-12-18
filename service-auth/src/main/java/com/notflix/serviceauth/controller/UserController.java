@@ -2,6 +2,7 @@ package com.notflix.serviceauth.controller;
 
 import java.util.Optional;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.notflix.serviceauth.entity.UserEntity;
 import com.notflix.serviceauth.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +24,21 @@ public class UserController {
 
   @GetMapping("/get")
   public ResponseEntity<String> getUser(HttpServletRequest request) {
-    System.out.println("Get user");
-  //   String email = request.getHeader("Authorization");
-  //   Optional<UserEntity> user = userEntityRepository.findByEmail(email);
+    String email = request.getHeader("Authorization");
+    Optional<UserEntity> user = userEntityRepository.findByEmail(email);
 
-  //   System.out.println("User: " + user);
+    System.out.println("User: " + user);
 
-  //   if (user.isEmpty()) {
-  //     System.out.println("User not found");
-  //     return new ResponseEntity<>("User not found", HttpStatus.OK);
-  //   }
+    if (user.isEmpty()) {
+      System.out.println("User not found");
+      return new ResponseEntity<>("User not found", HttpStatus.OK);
+    }
+
+    JsonObject userJson = new JsonObject();
+    userJson.addProperty("email", user.get().getEmail());
+    userJson.addProperty("name", user.get().getName());
+    userJson.addProperty("role", user.get().getRole().toString());
     
-  //   return ResponseEntity.ok(gson.toJson(user.get()));
-
-    return new ResponseEntity<>("User not found", HttpStatus.OK);
+    return ResponseEntity.ok(userJson.toString());
   }
 }

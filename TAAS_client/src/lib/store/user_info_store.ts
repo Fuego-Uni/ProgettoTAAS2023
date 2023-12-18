@@ -14,11 +14,16 @@ user.subscribe((value) => {
 export async function getUserInfo() {
   if (_user == null) {
     try {
-      user.set(await fetchUserInfo());
+      let response = await fetchUserInfo();
+      user.set(response);
     } catch (err) {
       user.set(null);
     }
   }
 
   return _user;
+}
+
+export async function updateUserInfo() {
+  user.set(await fetchUserInfo());
 }

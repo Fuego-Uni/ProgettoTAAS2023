@@ -28,7 +28,6 @@ spring:
         - id: auth
           uri: lb://service-auth
           predicates:
-            - Path=/friend/**
             - Path=/user/**
           filters:
             - AuthenticationFilter

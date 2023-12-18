@@ -27,9 +27,8 @@ public class MessageEntity {
     @JsonBackReference
     private ChatEntity chat;
 
-    @ManyToOne
-    @JsonBackReference
-    private UserEntity sender;
+  
+    private String email;
 
     @Column(nullable = false)
     private String content;
@@ -49,9 +48,9 @@ public class MessageEntity {
     public void setChatId(ChatEntity chatId) {
         this.chat = chatId;
     }
-    // set user
-    public void setUser(UserEntity user) {
-        this.sender = user;
+    // set email
+    public void setEmail(String email) {
+        this.email = email;
     }
     // get message
     public String getMessage() {
@@ -61,9 +60,9 @@ public class MessageEntity {
     public ChatEntity getChatId() {
         return chat;
     }
-    // get user
-    public UserEntity getUser() {
-        return sender;
+    // get email
+    public String getEmail() {
+        return email;
     }
     // get id
     public Long getId() {

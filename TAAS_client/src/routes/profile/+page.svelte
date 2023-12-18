@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { addFriend, getFriendInfo, getFriendList, removeFriend } from "$lib/api/friends";
   import { initiateAxios } from "$lib/authentication";
   import FriendListElement from "$lib/components/FriendListElement.svelte";
   import type { UserInfo } from "$lib/types";
@@ -12,41 +13,13 @@
 
   let friend_list: UserInfo[] = [];
 
-  async function addFriend() {
-    if (friend_input == "") return;
-
-    axios.post(`http://localhost:8080/friend/add`, {
-      friend: friend_input
-    }).then((res) => {
-      console.log(res);
-      friend_input = "";
-      loadFriendList();
-    }).catch((err) => {
-      console.log(err.response.data);
-      friend_input = "";
-    });
-  }
-
-  async function loadFriendList() {
-    let friends = await axios.get(`http://localhost:8080/friend/all`)
-    
-    friend_list = friends.data;
-  }
-
-  function removeFriend(email: any) {
-    axios.post(`http://localhost:8080/friend/remove`, {
-      friend: email
-    }).then((res) => {
-      console.log(res);
-      loadFriendList();
-    }).catch((err) => {
-      console.log(err.response.data);
-    });
-  }
-
-  onMount(() => {
+  onMount(async () => {
     initiateAxios();
-    loadFriendList();
+    let friend_emails = await getFriendList();
+
+    friend_list = await Promise.all(friend_emails.map(async (email) => {
+      return await getFriendInfo(email);
+    }));
   });
 </script>
 
@@ -69,7 +42,7 @@
       Add friend
       <div class="inputs">
         <input class="input ui-interactive" type="text" bind:value={friend_input} >
-        <div class="button ui-interactive ui-icon" on:click={addFriend}><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg></div>
+        <div class="button ui-interactive ui-icon" on:click={() => {addFriend(friend_input)}}><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg></div>
       </div>
     </div>
     <div class="friend-list-wrap ui-label-container">

@@ -2,18 +2,12 @@ package com.notflix.servicechat.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.notflix.servicechat.Utils;
 import com.notflix.servicechat.Entity.ChatEntity;
-import com.notflix.servicechat.Entity.FilmEntity;
 import com.notflix.servicechat.Entity.MessageEntity;
-import com.notflix.servicechat.Entity.ReviewEntity;
-import com.notflix.servicechat.Entity.UserEntity;
 import com.notflix.servicechat.messages.RabbitMessageSender;
 import com.notflix.servicechat.repo.ChatEntityRepo;
-import com.notflix.servicechat.repo.FilmEntityRepo;
 import com.notflix.servicechat.repo.MessageEntityRepo;
-import com.notflix.servicechat.repo.ReviewEntityRepo;
-import com.notflix.servicechat.repo.UserEntityRepository;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
@@ -42,45 +36,37 @@ public class ChatController {
   RabbitMessageSender rabbitMessageSender;
 
   @Autowired
-  ReviewEntityRepo reviewEntityRepo;
-
-  @Autowired
-  FilmEntityRepo filmEntityRepo;
-
-  @Autowired
-  UserEntityRepository userEntityRepository;
-
-  @Autowired
   ChatEntityRepo chatEntityRepo;
 
   @Autowired
   MessageEntityRepo messageEntityRepo;
 
+  /**
+   * Adds a message to a chat.
+   * 
+   * @param body The request body containing the message and chat ID.
+   * @return The response entity indicating the success or failure of the operation.
+   */
   @PostMapping("/add/message")
   public ResponseEntity<String> hello(HttpServletRequest request, @RequestBody String body) {
     String email = request.getHeader("Authorization");
-
+    
     JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
     String message = bodyJson.get("message").toString();
     String chatIdString = bodyJson.get("chatId").getAsString();
 
     System.out.println("==============" + chatIdString);
     System.out.println("==============" + message);
-
-    Optional<UserEntity> user = userEntityRepository.findByEmail(email);
     // search chat
     Optional<ChatEntity> chat = chatEntityRepo.findById(Long.parseLong(chatIdString));
     if (chat == null) {
       return ResponseEntity.badRequest().body("Chat not found");
     }
-    if (user == null) {
-      return ResponseEntity.badRequest().body("User not found");
-    }
-    if (user.isPresent() && chat.isPresent()) {
+    if (true && chat.isPresent()) {
       MessageEntity messageEntity = new MessageEntity();
       messageEntity.setChatId(chat.get());
       messageEntity.setMessage(message);
-      messageEntity.setUser(user.get());
+      messageEntity.setEmail(email);
       messageEntity.setTimestamp(new java.util.Date());
       System.out.println("================SALVO NEL DB=====================" + messageEntity.toString());
       messageEntityRepo.save(messageEntity);
@@ -88,11 +74,15 @@ public class ChatController {
     }else{
       return ResponseEntity.badRequest().body("Message not sent");
     }
-    /* rabbitMessageSender.sendMessage(gson.toJson(body), "chat"); */
-
-    
+    /* rabbitMessageSender.sendMessage(gson.toJson(body), "chat"); */    
   }
 
+  /**
+   * Gets all messages for a chat.
+   * 
+   * @param chat_id The ID of the chat to get messages for.
+   * @return The response entity containing the messages.
+   */
   @GetMapping("/get/message")
   public ResponseEntity<String> getMessage(HttpServletRequest request,  @RequestParam String chat_id) {
 
@@ -109,11 +99,11 @@ public class ChatController {
       System.out.println("MESSAGGIO");
       Hibernate.initialize(message);
       MessageType messageString1 = new MessageType(message.getMessage(), message.getChatId().getId().toString(),
-          message.getUser().getEmail(), message.getUser().getName(), message.getTimestamp());
+          message.getEmail(), message.getEmail(), message.getTimestamp());
       messageString.add(messageString1);
     }
     System.out.println("===================qui==================");
-  
+    
     for( MessageType message : messageString){
       System.out.println(message.toString());
     }
@@ -124,6 +114,14 @@ public class ChatController {
     return ResponseEntity.ok().body(gson.toJson(responseJson));
   }
 
+  /**
+   * Adds a chat between two users.
+   * 
+   * @param body The request body containing the email of the user to add a chat
+   *             with.
+   * @return The response entity indicating the success or failure of the
+   *         operation.
+   */
   @PostMapping("/add/chat")
   public ResponseEntity<String> addChat(HttpServletRequest request, @RequestBody String body) {
     String email = request.getHeader("email");
@@ -131,8 +129,8 @@ public class ChatController {
     JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
     String user = bodyJson.get("email").getAsString();
 
-    Optional<UserEntity> user1 = userEntityRepository.findByEmail(email);
-    Optional<UserEntity> user2 = userEntityRepository.findByEmail(user);
+    String user1 = email;
+    String user2 = user;
     ChatEntity chatEntity = new ChatEntity();
     if (user1 == null) {
       return ResponseEntity.badRequest().body("User not found");
@@ -140,9 +138,9 @@ public class ChatController {
     if (user2 == null) {
       return ResponseEntity.badRequest().body("User not found");
     }
-    if (user1.isPresent() && user2.isPresent()) {
-      chatEntity.setUser1(user1.get());
-      chatEntity.setUser2(user2.get());
+    if (true && user1 != null && user2 != null) {
+      chatEntity.setUser1(email);
+      chatEntity.setUser2(user);
       chatEntityRepo.save(chatEntity);
     }
 
@@ -153,23 +151,29 @@ public class ChatController {
       responseJson.addProperty("chatId", chatEntity.getId().toString());
 
       return ResponseEntity.ok().body(gson.toJson(responseJson));
-    } else {
+    } 
       return ResponseEntity.badRequest().body("Chat could not be created");
-    }
+    
+}
 
-  }
-
-  
+  /**
+   * Gets a chat between two users.
+   * 
+   * @param body The request body containing the email of the user to get a chat
+   *             with.
+   * @return The response entity indicating the success or failure of the
+   *         operation.
+   */  
   @GetMapping("/get/chat")
   public ResponseEntity<String> getChat(HttpServletRequest request) {
     String email = request.getHeader("Authorization");
     System.out.println("------------" + email);
-    Optional<UserEntity> user = userEntityRepository.findByEmail(email);
+    String user = email;
 
 
     
-    Optional<ChatEntity> chat = chatEntityRepo.findByUser1_Id(user.get().getId());
-    Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2_Id(user.get().getId());
+    Optional<ChatEntity> chat = chatEntityRepo.findByUser1_Id(user);
+    Optional<ChatEntity> chat1 = chatEntityRepo.findByUser2_Id(user);
     if (!chat.isPresent() && !chat1.isPresent()) {
       return ResponseEntity.badRequest().body("Chat not found");
     }
@@ -177,24 +181,24 @@ public class ChatController {
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat.get().getId().toString());
-      responseJson.addProperty("user1", chat.get().getUser1().getEmail());
-      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
+      responseJson.addProperty("user1", chat.get().getUser1());
+      responseJson.addProperty("user2", chat.get().getUser2());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
     if(chat.isPresent()){ 
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat.get().getId().toString());
-      responseJson.addProperty("user1", chat.get().getUser1().getEmail());
-      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
+      responseJson.addProperty("user1", chat.get().getUser1());
+      responseJson.addProperty("user2", chat.get().getUser2());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
     if(chat1.isPresent()){
       JsonObject responseJson = new JsonObject();
       responseJson.addProperty("message", "Chat found");
       responseJson.addProperty("chat", chat1.get().getId().toString());
-      responseJson.addProperty("user2", chat1.get().getUser2().getEmail());
-      responseJson.addProperty("user2", chat.get().getUser2().getEmail());
+      responseJson.addProperty("user2", chat1.get().getUser2());
+      responseJson.addProperty("user2", chat.get().getUser2());
       return ResponseEntity.ok().body(gson.toJson(responseJson));
     }
     return ResponseEntity.ok().body("Chat found");

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getFilmInfo } from "$lib/api/moviedb_api";
+  import { getFilmInfo, getFilmList } from "$lib/api/moviedb_api";
   import type { MediaData, Review } from "$lib/types";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
@@ -7,6 +7,7 @@
   import { getReviews, postReview } from "$lib/api/reviews";
   import Rating from "$lib/components/Rating.svelte";
   import { getUserInfo } from "$lib/store/user_info_store";
+  import FriendReview from "$lib/components/FriendReview.svelte";
 
   export let data: PageData;
   let film_id: number = Number.parseInt(data.film_id);
@@ -19,25 +20,6 @@
 
   $: { review_vote_input = review_vote_input > 10 ? 10 : review_vote_input; }
 
-  onMount(async () => {
-    media_info = await getFilmInfo(film_id);
-    film_review = await getReviews(film_id)
-
-    console.table(film_review);
-
-    // get review from current user
-    console.log("user info", await getUserInfo());
-    // await getUserInfo()
-    // const user = (await getUserInfo())!;
-    // const user_review = film_review.find(review => review.user == user.email);
-
-    // if(user_review) {
-    //   review_vote_input = user_review.vote;
-    //   review_note_input = user_review.note;
-    // }
-
-  }); 
-
   async function pubblicaReview() {
     if(review_vote_input == 0 || review_note_input == "") { return; }
 
@@ -46,6 +28,20 @@
     review_vote_input = 0;
     review_note_input = "";
   }
+
+  onMount(async () => {
+    media_info = await getFilmInfo(film_id);
+    let reviews = await getReviews(film_id);
+    let user = await getUserInfo();
+
+    let my_review = reviews.find(review => review.user == user!.email);
+    if(my_review) {
+      review_vote_input = my_review.vote;
+      review_note_input = my_review.note;
+    }
+
+    film_review = reviews.filter(review => review.user != user!.email);
+  }); 
 </script>
 
 <div class="page">
@@ -59,9 +55,9 @@
       </div>
     </div>
     <div class="carousel-wrap">
-      <!-- {#await getPopularFilms(2) then films1}
-        <ContentCarousel title="" items={films1} />
-      {/await} -->
+      {#await getFilmList(1, 'popular') then films}
+        <ContentCarousel title="" items={films} type="film" />
+      {/await}
     </div>
   </div>
   <div class="right-wrap">
@@ -72,7 +68,9 @@
     </div>
 
     <div class="review-list">
-      
+      {#each film_review as review}
+        <FriendReview review={review} />
+      {/each}
     </div>
   </div>
 </div>
@@ -170,6 +168,14 @@
       .publish-button {
         height: 2.5rem;
       }
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      overflow-y: scroll;
     }
   }
 </style>

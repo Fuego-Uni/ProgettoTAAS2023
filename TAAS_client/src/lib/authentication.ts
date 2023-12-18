@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type { UserInfo } from './types'
+import { updateUserInfo } from './store/user_info_store'
 
 export function setAuthenticationToken(token: string | null) {
   if (token === null) {
@@ -16,12 +17,9 @@ export function initiateAxios() {
 }
 
 export async function fetchUserInfo(): Promise<UserInfo> {
-  return axios.get(
-    'http://localhost:8080/user/me', { }
+  let response = await axios.get(
+    'http://localhost:8080/user/get', { }
   )
-    .then((response) => {
-      console.log(response.data)
-    }).catch((err) => {
-      console.error("Unable to get users")
-    })
+    
+  return response.data
 }
