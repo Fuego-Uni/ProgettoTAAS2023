@@ -19,7 +19,7 @@
     axios
       .post(`http://localhost:8080/friend/add`, {
         friend: "tommasofogliobonda.tfb@gmail.com",
-        prova: "prova"
+        prova: "prova",
       })
       .then((res) => {
         console.log(res);

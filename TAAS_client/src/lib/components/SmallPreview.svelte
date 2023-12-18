@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { getAllFilms } from "$lib/film";
-  import type { FilmData } from "$lib/types";
+  import { getPopularFilms } from "$lib/api/moviedb_api";
+  import type { MediaData } from "$lib/types";
   import { onMount } from "svelte";
   import { fade, fly } from 'svelte/transition';
-  let current_elements: FilmData[];
+  let current_elements: MediaData[];
   let page: number = Math.floor(Math.random() * 100) + 1;
   let slice: number[] = [0, 2];
   onMount(async () => {
-    current_elements = await getAllFilms(1);
+    current_elements = await getPopularFilms(1);
     // get only the first 2 elements
     current_elements = current_elements.slice(0, 2);
     //console.log(current_elements);
@@ -17,7 +17,7 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 {#key slice}
 <div class="small_carosel_preview" in:fly={{ duration: 500 }}>
-  {#await getAllFilms(page) then films1}
+  {#await getPopularFilms(page) then films1}
     {#each films1.slice(slice[0], slice[1]) as film}
       <div class="small_preview">
         <img src={film.poster_path} alt="" />

@@ -1,39 +1,33 @@
 package com.notflix.servicereviews.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.common.base.Optional;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.notflix.servicereviews.Utils;
 import com.notflix.servicereviews.Entity.FilmEntity;
 import com.notflix.servicereviews.Entity.ReviewEntity;
-import com.notflix.servicereviews.Entity.UserEntity;
 import com.notflix.servicereviews.messages.RabbitMessageSender;
 import com.notflix.servicereviews.repo.FilmEntityRepo;
 import com.notflix.servicereviews.repo.ReviewEntityRepo;
-import com.notflix.servicereviews.repo.UserEntityRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Enumeration;
+
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.HttpStatus;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
 @RequestMapping("/review")
-public class reviewController {
+public class ReviewController {
   Gson gson = new Gson();
 
   @Autowired
@@ -45,86 +39,90 @@ public class reviewController {
   @Autowired
   FilmEntityRepo filmEntityRepo;
 
-  @Autowired
-  UserEntityRepository userEntityRepository;
-
   @PostMapping("/add")
-  public String hello(HttpServletRequest request, @RequestBody String body) {
-    // cicle all headers and print all header in the request
-    System.out.println("headers:");
-    Enumeration<String> headerNames = request.getHeaderNames();
-    while (headerNames.hasMoreElements()) {
-      String header = headerNames.nextElement();
-      System.out.println(header + ": " + request.getHeader(header));
-    }
-    JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
-    String filmId = bodyJson.get("filmId").getAsBigInteger().toString();
-    String vote = bodyJson.get("vote").getAsString();
-    String note = bodyJson.get("note").getAsString();
-    System.out.println("filmId: " + filmId);
-    System.out.println("vote: " + vote);
-    System.out.println("note: " + note);
-
-    String email = request.getHeader("Authorization");
+  public String postReview(HttpServletRequest request, @RequestParam int mediaId, @RequestParam int vote, @RequestParam String note) {
+    // get email from AUTHORIZATION header
+    String user = request.getHeader("Authorization");
 
     // check if film exists
-    if (filmEntityRepo.findById(Integer.parseInt(filmId)).isEmpty()) {
-      System.out.println("film not found");
+    Optional<FilmEntity> film = filmEntityRepo.findById(mediaId);
+
+    // TODO: check if the id is a film or a series, etc...
+
+    if (film.isEmpty()) {
       // add film to db
-      FilmEntity film = new FilmEntity(Integer.parseInt(filmId));
-      filmEntityRepo.save(film);
+      FilmEntity newFilm = new FilmEntity(mediaId);
+      filmEntityRepo.save(newFilm);
     }
-    var film = filmEntityRepo.findById(Integer.parseInt(filmId)).get();
 
-    System.out.println("film found");
-    // get email from AUTHORIZATION header
-    System.out.println("email: " + email);
-    UserEntity user = userEntityRepository.findByEmail(email).get();
-    System.out.println("user: " + user);
+    // find review from the same user
+    Optional<ReviewEntity> reviewEntity = reviewEntityRepo.findByFilmIdAndUserEmail(mediaId, user);
 
-    // create a new review
-    int voteInt = Integer.parseInt(vote);
-    ReviewEntity review = new ReviewEntity(user, film, voteInt, note);
+    ReviewEntity review;
+
+    if (reviewEntity.isEmpty()) {
+      // create new review
+      review = new ReviewEntity(user, film.get(), vote, note);
+      System.out.println("Review created");
+    } else {
+      // update review
+      review = reviewEntity.get();
+      review.setVote(vote);
+      review.setNote(note);
+      System.out.println("Review updated");
+    }
 
     // save
-    
     reviewEntityRepo.save(review);
-    // sent to rabbitmq
-    rabbitMessageSender.sendNotification("default", "New review", email);
 
-    return request.getHeader("Authorization");
+    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/friend/all", user);
+
+    friends.add(user);
+    String[] friendsArray = friends.toArray(new String[0]);
+
+    rabbitMessageSender.sendNotification("review-added", review.getId().toString(), friendsArray);
+
+    return "Review added";
   }
 
-@GetMapping("/get")
-public ResponseEntity<String> getReviews(@RequestParam Long filmId) {
+  @GetMapping("/friends")
+  public ResponseEntity<String> getFriendReviews(HttpServletRequest request, @RequestParam int mediaId) {
+    String user = request.getHeader("Authorization");
 
+    // TODO: check if the id is a film or a series, etc...
+    List<ReviewEntity> reviews = reviewEntityRepo.findByFilmId(mediaId);
 
-    List<ReviewEntity> reviews = reviewEntityRepo.findByFilmFilmId(filmId);
-    // TODO: filter for friends
-    
-    
-    String reviewJson = "";
-    if (!reviews.isEmpty()) {
-        // Initialize the proxy objects
-        for (ReviewEntity review : reviews) {
-            Hibernate.initialize(review.getUser());
-            Hibernate.initialize(review.getFilm());
-        }
-        // Convert the ReviewEntity object to JSON
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        try {
-            reviewJson = objectMapper.writeValueAsString(reviews);
-            System.out.println(reviewJson);
-        } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        // Return the JSON as the body of the response
-        return new ResponseEntity<>(reviewJson, HttpStatus.OK);
-    } else {
-        // Return a 404 Not Found status code if the review is not found
-        return new ResponseEntity<>("Review not found", HttpStatus.NOT_FOUND);
+    // filter reviews by friends
+    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/friend/all", user);
+    friends.add(user);
+
+    for (int i = 0; i < reviews.size(); i++) {
+      if (!friends.contains(reviews.get(i).getUser())) {
+        reviews.remove(i);
+        i--;
+      }
     }
-  } 
+
+    if (!reviews.isEmpty()) {
+      JsonArray reviewsJson = new JsonArray();
+
+      for (ReviewEntity review : reviews) {
+        JsonObject reviewJson = new JsonObject();
+        reviewJson.addProperty("vote", review.getVote());
+        reviewJson.addProperty("note", review.getNote());
+        reviewJson.addProperty("user", review.getUser());
+
+        reviewsJson.add(reviewJson);
+      }
+
+      System.out.println(reviewsJson.toString());
+
+      return new ResponseEntity<>(reviewsJson.toString(), HttpStatus.OK);
+    } else {
+      // Return a 404 Not Found status code if the review is not found
+      System.out.println("Review not found");
+      
+      return new ResponseEntity<>("Review not found", HttpStatus.FORBIDDEN);
+    }
+  }
 }

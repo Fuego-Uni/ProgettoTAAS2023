@@ -19,7 +19,7 @@ export type MediaData = {
   release_date: string,
   poster_path: string,
   backdrop_path: string,
-  vote_average: number,
+  rating_average: number,
   vote_count: number,
 }
 

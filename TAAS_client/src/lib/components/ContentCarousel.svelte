@@ -7,12 +7,9 @@
 
   export let items: MediaData[];
   export let title: string;
+  export let type: "film" | "show";
 
   let offset = 0;
-
-  onMount(async () => {
-    // listElement.addEventListener("scroll", calculateActiveItem);
-  });
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -27,7 +24,7 @@
         data={item}
         on:click={() => {
           console.log("click")
-          goto(`/film/${item.id}`)
+          goto(`${type}/${item.id}`)
         }}
       />
     {/each}

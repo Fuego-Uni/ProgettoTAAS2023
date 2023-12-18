@@ -1,25 +1,26 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import Rating from "./Rating.svelte";
-  import type { ContentPreviewData, MediaData } from "$lib/types";
+  import type { MediaData } from "$lib/types";
 
   const dispatch = createEventDispatcher();
 
   export let data: MediaData;
   export let active = false;
+  export let rating_type: "friend" | "public" = "friend";
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="content-preview" class:active on:click={() => dispatch("click")}>
+<div class="content-preview" class:active on:click={() => {dispatch("click")}} >
   <img src={data.backdrop_path} alt="" class="banner" />
   <div class="infobox-wrap">
     <div class="infobox">
       <div class="section title">{data.title}</div>
       <div class="section date">{data.release_date}</div>
       <div class="section rating">
-        <Rating rating_average={4} rating_personal={3} />
-      </div>  
+        <Rating rating_average={data.rating_average} />
+      </div>
     </div>
   </div>
 </div>
@@ -47,7 +48,7 @@
       margin: 0 1.5rem;
     }
 
-    .banner { 
+    .banner {
       grid-row: 1 / 3;
       grid-column: 1 / 3;
 

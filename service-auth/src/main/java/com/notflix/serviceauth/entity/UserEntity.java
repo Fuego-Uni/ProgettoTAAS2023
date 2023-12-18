@@ -14,9 +14,8 @@ public class UserEntity {
   @Column(name = "email")
   private String email;
 
-
+  @Column(name = "name")
   private String name;
-
 
   @Column(name = "role")
   @Enumerated(EnumType.STRING)

@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 public class FilmEntity {
  @Id
  @Column(name = "film_id")
- private int filmId;
+ private int id;
 
  // Add other fields as needed
 
@@ -16,15 +16,15 @@ public class FilmEntity {
   // Default constructor required by JPA
  }
 
- public FilmEntity(int filmId) {
-  this.filmId = filmId;
+ public FilmEntity(int id) {
+  this.id = id;
  }
 
- public int getFilmId() {
-  return filmId;
+ public int getId() {
+  return id;
  }
 
- public void setFilmId(int filmId) {
-  this.filmId = filmId;
+ public void setId(int id) {
+  this.id = id;
  }
 }

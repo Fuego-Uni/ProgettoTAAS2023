@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { getFilmInfo } from "$lib/api/moviedb_api";
+  import { getShowInfo } from "$lib/api/moviedb_api";
   import type { MediaData, Review } from "$lib/types";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
   import { getReviews, postReview } from "$lib/api/reviews";
-  import Rating from "$lib/components/Rating.svelte";
-  import { getUserInfo } from "$lib/store/user_info_store";
 
   export let data: PageData;
-  let film_id: number = Number.parseInt(data.film_id);
+  let show_id: number = Number.parseInt(data.show_id);
   let media_info: MediaData;
   let film_review: Review[]= [];
 
@@ -20,28 +18,16 @@
   $: { review_vote_input = review_vote_input > 10 ? 10 : review_vote_input; }
 
   onMount(async () => {
-    media_info = await getFilmInfo(film_id);
-    film_review = await getReviews(film_id)
+    media_info = await getShowInfo(show_id);
+    film_review = await getReviews(show_id)
 
-    console.table(film_review);
-
-    // get review from current user
-    console.log("user info", await getUserInfo());
-    // await getUserInfo()
-    // const user = (await getUserInfo())!;
-    // const user_review = film_review.find(review => review.user == user.email);
-
-    // if(user_review) {
-    //   review_vote_input = user_review.vote;
-    //   review_note_input = user_review.note;
-    // }
-
+    console.log(film_review);
   }); 
 
   async function pubblicaReview() {
     if(review_vote_input == 0 || review_note_input == "") { return; }
 
-    postReview(film_id, review_vote_input, review_note_input);
+    postReview(show_id, review_vote_input, review_note_input);
 
     review_vote_input = 0;
     review_note_input = "";

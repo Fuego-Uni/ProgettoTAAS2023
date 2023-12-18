@@ -1,6 +1,14 @@
+<script>
+
+  import { goto } from "$app/navigation";
+
+</script>
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+  <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div class="categories">
-  <div class="category ui-interactive">Film</div>
-  <div class="category ui-interactive">SerieTV</div>
+  <div class="category ui-interactive" on:click={() => goto("/film")}>Film</div>
+  <div class="category ui-interactive" on:click={() => goto("/show")}>ShowTV</div>
   <div class="category ui-interactive">Musica</div>
   <div class="category ui-interactive">Libri</div>
 </div>
