@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.notflix.servicereviews.Utils;
-import com.notflix.servicereviews.Entity.FilmEntity;
+import com.notflix.servicereviews.Entity.MediaEntity;
 import com.notflix.servicereviews.Entity.ReviewEntity;
 import com.notflix.servicereviews.messages.RabbitMessageSender;
-import com.notflix.servicereviews.repo.FilmEntityRepo;
+import com.notflix.servicereviews.repo.MediaEntityRepo;
 import com.notflix.servicereviews.repo.ReviewEntityRepo;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,32 +38,33 @@ public class ReviewController {
   ReviewEntityRepo reviewEntityRepo;
 
   @Autowired
-  FilmEntityRepo filmEntityRepo;
+  MediaEntityRepo mediaEntityRepo;
 
+  // post a review
   @PostMapping("/add")
   public String postReview(HttpServletRequest request, @RequestParam int mediaId, @RequestParam int vote, @RequestParam String note) {
     // get email from AUTHORIZATION header
     String user = request.getHeader("Authorization");
 
-    // check if film exists
-    Optional<FilmEntity> film = filmEntityRepo.findById(mediaId);
+    // check if media exists
+    Optional<MediaEntity> media = mediaEntityRepo.findById(mediaId);
 
-    // TODO: check if the id is a film or a series, etc...
+    // TODO: check if the id is a media or a series, etc...
 
-    if (film.isEmpty()) {
-      // add film to db
-      FilmEntity newFilm = new FilmEntity(mediaId);
-      filmEntityRepo.save(newFilm);
+    if (media.isEmpty()) {
+      // add media to db
+      MediaEntity newMedia = new MediaEntity(mediaId);
+      mediaEntityRepo.save(newMedia);
     }
 
     // find review from the same user
-    Optional<ReviewEntity> reviewEntity = reviewEntityRepo.findByFilmIdAndUserEmail(mediaId, user);
+    Optional<ReviewEntity> reviewEntity = reviewEntityRepo.findByMediaIdAndUserEmail(mediaId, user);
 
     ReviewEntity review;
 
     if (reviewEntity.isEmpty()) {
       // create new review
-      review = new ReviewEntity(user, film.get(), vote, note);
+      review = new ReviewEntity(user, media.get(), vote, note);
       System.out.println("Review created");
     } else {
       // update review
@@ -91,12 +92,13 @@ public class ReviewController {
     return "Review added";
   }
 
+  // get reviews of a media from friends
   @GetMapping("/friends")
   public ResponseEntity<String> getFriendReviews(HttpServletRequest request, @RequestParam int mediaId) {
     String user = request.getHeader("Authorization");
 
-    // TODO: check if the id is a film or a series, etc...
-    List<ReviewEntity> reviews = reviewEntityRepo.findByFilmId(mediaId);
+    // TODO: check if the id is a media or a series, etc...
+    List<ReviewEntity> reviews = reviewEntityRepo.findByMediaId(mediaId);
 
     // filter reviews by friends
     List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
@@ -126,10 +128,60 @@ public class ReviewController {
 
       return new ResponseEntity<>(reviewsJson.toString(), HttpStatus.OK);
     } else {
-      // Return a 404 Not Found status code if the review is not found
       System.out.println("Review not found");
       
-      return new ResponseEntity<>("Review not found", HttpStatus.FORBIDDEN);
+      // Return empty array
+      return new ResponseEntity<>("[]", HttpStatus.OK);
+    }
+  }
+
+  // get all media with a review from friends
+  @GetMapping("/media")
+  public ResponseEntity<String> getMediaWithReview(HttpServletRequest request) {
+    System.out.println("getMediaWithReview");
+    String user = request.getHeader("Authorization");
+
+    // get friends
+    List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
+
+    // get reviews
+    List<ReviewEntity> reviews = reviewEntityRepo.findAll();
+
+    // filter reviews by friends
+    for (int i = 0; i < reviews.size(); i++) {
+      if (!friends.contains(reviews.get(i).getUser())) {
+        reviews.remove(i);
+        i--;
+      }
+    }
+
+    // get media
+    List<MediaEntity> media = new ArrayList<>();
+
+    for (ReviewEntity review : reviews) {
+      if (!media.contains(review.getMedia())) {
+        media.add(review.getMedia());
+      }
+    }
+
+    if (!media.isEmpty()) {
+      JsonArray mediaJson = new JsonArray();
+
+      for (MediaEntity mediaEntity : media) {
+        JsonObject mediaJsonObj = new JsonObject();
+        mediaJsonObj.addProperty("id", mediaEntity.getId());
+
+        mediaJson.add(mediaJsonObj);
+      }
+
+      System.out.println(mediaJson.toString());
+
+      return new ResponseEntity<>(mediaJson.toString(), HttpStatus.OK);
+    } else {
+      System.out.println("Media not found");
+      
+      // Return empty array
+      return new ResponseEntity<>("[]", HttpStatus.OK);
     }
   }
 }

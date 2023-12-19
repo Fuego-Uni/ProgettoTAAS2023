@@ -1,6 +1,7 @@
 import axios from 'axios'
 import type { UserInfo } from './types'
-import { updateUserInfo } from './store/user_info_store'
+
+let axios_initialized = false
 
 export function setAuthenticationToken(token: string | null) {
   if (token === null) {
@@ -9,11 +10,18 @@ export function setAuthenticationToken(token: string | null) {
     return
   }
   localStorage.setItem('auth-token', token)
+
+  axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('auth-token')}`
+  axios.defaults.headers.common['Content-Type'] = 'application/json'
 }
 
 export function initiateAxios() {
+  if (axios_initialized) return
+
   axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('auth-token')}`
   axios.defaults.headers.common['Content-Type'] = 'application/json'
+
+  axios_initialized = true
 }
 
 export async function fetchUserInfo(): Promise<UserInfo> {

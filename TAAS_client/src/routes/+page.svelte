@@ -1,7 +1,7 @@
 <script lang="ts">
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
   import { getFilmList } from "$lib/api/moviedb_api";
-  import { getReviewedFilms } from "$lib/api/reviews";
+  import { getReviewedMedia } from "$lib/api/reviews";
 </script>
 
 <div class="page">

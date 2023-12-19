@@ -9,10 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import com.notflix.servicereviews.Entity.ReviewEntity;
 
 public interface ReviewEntityRepo extends JpaRepository<ReviewEntity, Long> {
-  @Query("SELECT r FROM ReviewEntity r WHERE r.film.id = ?1")
-  List<ReviewEntity> findByFilmId(int filmId);
+  @Query("SELECT r FROM ReviewEntity r WHERE r.media.id = ?1")
+  List<ReviewEntity> findByMediaId(int mediaId);
 
-  // get reviews for a user and a film
-  @Query("SELECT r FROM ReviewEntity r WHERE r.film.id = ?1 AND r.user = ?2")
-  Optional<ReviewEntity> findByFilmIdAndUserEmail(int filmId, String email);
+  // get reviews for a user and a media
+  @Query("SELECT r FROM ReviewEntity r WHERE r.media.id = ?1 AND r.user = ?2")
+  Optional<ReviewEntity> findByMediaIdAndUserEmail(int mediaId, String email);
 }

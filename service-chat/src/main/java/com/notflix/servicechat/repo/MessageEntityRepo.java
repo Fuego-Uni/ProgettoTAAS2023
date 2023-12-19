@@ -6,8 +6,6 @@ import java.util.List;
 
 
 public interface MessageEntityRepo extends JpaRepository<MessageEntity, Long> {
-    
-    List<MessageEntity> findAllByChat_Id(Long chatId);
-
+  List<MessageEntity> findAllByChat_Id(Long chatId);
 }
 

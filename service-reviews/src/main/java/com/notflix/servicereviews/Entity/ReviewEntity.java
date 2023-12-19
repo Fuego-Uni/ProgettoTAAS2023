@@ -14,8 +14,8 @@ public class ReviewEntity {
   private String user;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "film_id")
-  private FilmEntity film;
+  @JoinColumn(name = "media_id")
+  private MediaEntity media;
 
   @Column(name = "vote")
   private Integer vote;
@@ -26,9 +26,9 @@ public class ReviewEntity {
   public ReviewEntity() {
   }
 
-  public ReviewEntity(String user, FilmEntity film, Integer vote, String note) {
+  public ReviewEntity(String user, MediaEntity media, Integer vote, String note) {
     this.user = user;
-    this.film = film;
+    this.media = media;
     this.vote = vote;
     this.note = note;
   }
@@ -49,12 +49,12 @@ public class ReviewEntity {
     this.user = user;
   }
 
-  public FilmEntity getFilm() {
-    return film;
+  public MediaEntity getMedia() {
+    return media;
   }
 
-  public void setFilm(FilmEntity film) {
-    this.film = film;
+  public void setMedia(MediaEntity media) {
+    this.media = media;
   }
 
   public Integer getVote() {

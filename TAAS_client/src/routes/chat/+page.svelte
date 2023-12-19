@@ -1,20 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { PageData } from "./$types";
   import { getChat } from "$lib/chat";
 
-
-  const getChat_list = async () => {
-    const res = await getChat();
-    console.log(res);
-    return res;
-  };
-
   onMount(async () => {
-    setTimeout(async () => {
-    console.log(await getChat());
-      console.log("hello");
-    }, 1000);
+    getChat().then((res) => {
+      console.log(res);
+    });
   });
 </script>
 

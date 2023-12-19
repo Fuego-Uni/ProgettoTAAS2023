@@ -11,8 +11,6 @@
   import { mainSocketSetHandler } from '$lib/SocketConnection';
 
   onMount(() => {
-    initiateAxios();
-
     let url = $page.url.toString();
     if(localStorage.getItem('auth-token') === null && !url.includes('auth/signup')) {
       goto('auth/signup')
@@ -21,7 +19,7 @@
     mainSocketSetHandler("notification", (data) => {
       console.log("layout_handler", data );
       // TODO: show notification
-    }, "layout" )
+    })
   });
 </script>
 
