@@ -3,6 +3,7 @@ package com.notflix.servicechat.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.notflix.servicechat.Utils;
 import com.notflix.servicechat.Entity.ChatEntity;
 import com.notflix.servicechat.Entity.MessageEntity;
 import com.notflix.servicechat.messages.RabbitMessageSender;
@@ -120,27 +121,38 @@ public class ChatController {
    */
   @PostMapping("/add")
   public ResponseEntity<String> addChat(HttpServletRequest request, @RequestBody String body) {
-    String email = request.getHeader("email");
+    String email = request.getHeader("Authorization");
 
     JsonObject bodyJson = gson.fromJson(body, JsonObject.class);
     String user = bodyJson.get("email").getAsString();
 
-    String user1 = email;
-    String user2 = user;
+    String currentUser = email;
+    String otherUser = user;
+
+    if (currentUser == null) { return ResponseEntity.badRequest().body("User not found"); }
+    if (otherUser == null) { return ResponseEntity.badRequest().body("User not found"); }
+
+    System.out.println("currentUser: " + currentUser);
+    System.out.println("otherUser: " + otherUser);
+
+    Boolean exists = Utils.getRequestWithAuth("http://service-auth:8081/user/exists?email=" + otherUser, currentUser);
+
+    if(!exists) { return ResponseEntity.badRequest().body("User not found"); }
+
+    Optional<ChatEntity> chat = chatEntityRepo.findByUsers(currentUser, otherUser);
+    if (chat.isPresent()) {
+      return ResponseEntity.badRequest().body("Chat already exists");
+    }
+
     ChatEntity chatEntity = new ChatEntity();
-    if (user1 == null) {
-      return ResponseEntity.badRequest().body("User not found");
-    }
-    if (user2 == null) {
-      return ResponseEntity.badRequest().body("User not found");
-    }
-    if (true && user1 != null && user2 != null) {
+
+    if (true && currentUser != null && otherUser != null) {
       chatEntity.setUser1(email);
       chatEntity.setUser2(user);
       chatEntityRepo.save(chatEntity);
     }
 
-    rabbitMessageSender.sendNotification("new-chat", chatEntity.getId().toString(), user1, user2);
+    rabbitMessageSender.sendNotification("new-chat", chatEntity.getId().toString(), currentUser, otherUser);
 
     return ResponseEntity.ok().body(chatEntity.getId().toString());
   }
@@ -162,7 +174,13 @@ public class ChatController {
     JsonArray chats = new JsonArray();
 
     for (ChatEntity chatEntity : chat) {
-      chats.add(chatEntity.getId().toString());
+      JsonObject chatJson = new JsonObject();
+
+      chatJson.addProperty("id", chatEntity.getId());
+      chatJson.addProperty("user1", chatEntity.getUser1());
+      chatJson.addProperty("user2", chatEntity.getUser2());
+      
+      chats.add(chatJson);
     }
 
     return ResponseEntity.ok().body(chats.toString());

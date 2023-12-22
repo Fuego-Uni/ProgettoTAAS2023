@@ -51,10 +51,14 @@ public class ReviewController {
 
     // TODO: check if the id is a media or a series, etc...
 
+    MediaEntity newMedia;
+
     if (media.isEmpty()) {
       // add media to db
-      MediaEntity newMedia = new MediaEntity(mediaId);
-      mediaEntityRepo.save(newMedia);
+      newMedia = new MediaEntity(mediaId);
+      newMedia = mediaEntityRepo.save(newMedia);
+    } else {
+      newMedia = media.get();
     }
 
     // find review from the same user
@@ -62,16 +66,26 @@ public class ReviewController {
 
     ReviewEntity review;
 
+    if (media.isEmpty()) {
+      // add media to db
+      newMedia = new MediaEntity(mediaId);
+      newMedia = mediaEntityRepo.save(newMedia);
+    }
+
+    String message;
+
     if (reviewEntity.isEmpty()) {
       // create new review
-      review = new ReviewEntity(user, media.get(), vote, note);
+      review = new ReviewEntity(user, newMedia, vote, note);
       System.out.println("Review created");
+      message = "review-added";
     } else {
       // update review
       review = reviewEntity.get();
       review.setVote(vote);
       review.setNote(note);
       System.out.println("Review updated");
+      message = "review-updated";
     }
 
     // save
@@ -79,7 +93,7 @@ public class ReviewController {
 
     // friend is a list of user objects, {email: "email", name: "name"}
     List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
-
+    
     for (int i = 0; i < friends.size(); i++) {
       System.out.println(friends.get(i));
     }
@@ -87,7 +101,7 @@ public class ReviewController {
     friends.add(user);
     String[] friendsArray = friends.toArray(new String[0]);
 
-    rabbitMessageSender.sendNotification("review-added", review.getId().toString(), friendsArray);
+    rabbitMessageSender.sendNotification(message, review.getId().toString(), friendsArray);
 
     return "Review added";
   }

@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { mainSocketSetHandler } from "$lib/SocketConnection";
+  import { getProfilePicture } from "$lib/api/files";
   import { addFriend, getFriendInfo, getFriendList, removeFriend } from "$lib/api/friends";
+  import { fetchtUserInfo } from "$lib/api/user";
   import { initiateAxios } from "$lib/authentication";
   import FriendListElement from "$lib/components/FriendListElement.svelte";
+  import { getUserInfo } from "$lib/store/user_info_store";
   import type { UserInfo } from "$lib/types";
   import axios from "axios";
   import { onMount } from "svelte";
@@ -10,25 +14,57 @@
   let user_email = "Email";
 
   let friend_input = "";
-
   let friend_list: UserInfo[] = [];
 
-  onMount(async () => {
-    initiateAxios();
+  let user_info: UserInfo;
+
+  let profile_picture: string | null;
+
+  async function updateFriendList() {
     let friend_emails = await getFriendList();
 
     friend_list = await Promise.all(friend_emails.map(async (email) => {
       return await getFriendInfo(email);
     }));
+  }
+
+  async function updateProfilePicture(data: string) {
+    let user = (await getUserInfo())!;
+
+    // console.log(user.email, data);
+
+    if (user.email == data) {
+      profile_picture = await getProfilePicture();
+    }
+  }
+
+  onMount(async () => {
+    updateFriendList();
+
+    user_info = await fetchtUserInfo()
+    user_name = user_info.name;
+    user_email = user_info.email;
+
+    updateProfilePicture(user_email);
+
+    mainSocketSetHandler("friend-deleted", updateFriendList)
+    mainSocketSetHandler("friend-added", updateFriendList)
+
+    mainSocketSetHandler("pfp-updated", updateProfilePicture)
   });
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-img-redundant-alt -->
 <div class="page">
   <div class="info-wrap wrap">
     <div class="avatar">
-
+      {#if profile_picture}
+        <img src={profile_picture} alt="profile picture">
+      {:else}
+        <div class="avatar">{user_name[0].toUpperCase()}</div>
+      {/if}
     </div>
     <div class="name ui-base info">
       {user_name}
@@ -81,10 +117,24 @@
     width: 20rem;
 
     .avatar {
-      background-color: white;
       height: 10rem;
       width: 10rem;
-      border-radius: 50%
+      border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background-color: var(--color-main-accent);
+      color: white;
+      font-size: 5rem;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
     }
 
     .info {

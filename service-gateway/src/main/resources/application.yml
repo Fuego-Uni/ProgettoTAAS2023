@@ -31,6 +31,12 @@ spring:
             - Path=/user/**
           filters:
             - AuthenticationFilter
+        - id: storage
+          uri: lb://service-storage
+          predicates:
+            - Path=/storage/**
+          filters:
+            - AuthenticationFilter
 
       globalcors:
         corsConfigurations:

@@ -1,15 +1,21 @@
 <script lang="ts">
+  import { getProfilePictureFriend } from "$lib/api/files";
   import { getFriendInfo } from "$lib/api/friends";
-  import { getUserInfo } from "$lib/store/user_info_store";
   import type { Review } from "$lib/types";
   import Rating from "./Rating.svelte";
-
 
   export let review: Review;
 </script>
 
 
 <div class="review ui-base">
+  {#await getProfilePictureFriend(review.user) then src}
+    {#if src}
+      <img src={src} alt={review.user[0].toUpperCase()} class="avatar" />
+    {:else}
+      <div class="avatar">{review.user[0].toUpperCase()}</div>
+    {/if}
+  {/await}
   {#await getFriendInfo(review.user) then user}
     <div class="user">{user.name}</div>
   {/await}
@@ -24,7 +30,7 @@
   .review {
     display: grid;
 
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 2rem 1fr auto;
     grid-template-rows: 2rem 1fr;
 
     flex-direction: column;
@@ -35,8 +41,29 @@
     max-height: 20rem;
   }
 
-  .user {
+  .avatar {
     grid-column: 1;
+    grid-row: 1;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--color-main-accent);
+    color: white;
+
+    font-size: 1.5rem;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+  }
+
+  .user {
+    grid-column: 2;
     grid-row: 1;
 
     font-weight: bold;
@@ -49,7 +76,7 @@
   }
 
   .vote-wrap {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
 
     display: flex;
@@ -58,7 +85,7 @@
   }
 
   .note {
-    grid-column: 1 / 3;
+    grid-column: 1 / 4;
     grid-row: 2;
 
     font-weight: normal;

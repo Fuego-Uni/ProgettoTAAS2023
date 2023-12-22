@@ -125,6 +125,18 @@ services:
     networks:
       - opnet
 
+  service-storage:
+    image: service-storage:latest
+    ports:
+      - "8085:8085"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://service-discovery-server:8761/eureka/
+    depends_on:
+      - service-discovery-server
+      - rabbitmq
+    networks:
+      - opnet
+
 networks:
   opnet:
     driver: bridge

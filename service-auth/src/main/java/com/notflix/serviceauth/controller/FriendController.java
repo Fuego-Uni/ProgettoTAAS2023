@@ -51,10 +51,11 @@ public class FriendController {
         .orElseThrow(() -> new RuntimeException("Friend not found"));
 
     userEntity.getFriends().add(friendEntity);
+    friendEntity.getFriends().add(userEntity);
     userEntityRepository.save(userEntity);
+    userEntityRepository.save(friendEntity);
 
-    rabbitMessageSender.sendNotification("friend-added", friend, user);
-    rabbitMessageSender.sendNotification("added-as-friend", user, friend);
+    rabbitMessageSender.sendNotification("friend-added", friend, user, friend);
 
     return ResponseEntity.ok().body(gson.toJson("Success"));
   }
@@ -129,7 +130,11 @@ public class FriendController {
         .orElseThrow(() -> new RuntimeException("Friend not found"));
 
     userEntity.getFriends().remove(friendEntity);
+    friendEntity.getFriends().remove(userEntity);
     userEntityRepository.save(userEntity);
+    userEntityRepository.save(friendEntity);
+
+    rabbitMessageSender.sendNotification("friend-deleted", friend, user, friend);
 
     return ResponseEntity.ok().body(gson.toJson("Delete - Success"));
   }

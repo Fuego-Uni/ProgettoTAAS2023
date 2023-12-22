@@ -3,8 +3,12 @@
   import { getFilmInfo, getFilmList } from "$lib/api/moviedb_api";
   import { getFriendReviews, getReviewedMedia } from "$lib/api/reviews";
   import { onMount } from "svelte";
+  import type { MediaData } from "$lib/types";
+  import { mainSocketSetHandler } from "$lib/SocketConnection";
 
-  export async function getReviewedFilmInfo() {
+  let reviewed_films: MediaData[] = [];
+
+  export async function updateReviewedFilmInfo() {
     let media = await getReviewedMedia();
     
     let media_info = await Promise.all(media.map(getFilmInfo));
@@ -22,17 +26,20 @@
       media_info[i].rating_average = average;
     }
 
-    return media_info;
+    reviewed_films = media_info;
   }
 
   onMount(async () => {
+    updateReviewedFilmInfo();
+    
+    mainSocketSetHandler("review-added", updateReviewedFilmInfo)
+    mainSocketSetHandler("friend-added", updateReviewedFilmInfo)
+    mainSocketSetHandler("friend-deleted", updateReviewedFilmInfo)
   });
 </script>
 
 <div class="page">
-  {#await getReviewedFilmInfo() then films}
-    <ContentCarousel title="Friends recommend" items={films} type={"film"} />
-  {/await}
+  <ContentCarousel title="Friends recommend" items={reviewed_films} type={"film"} />
   {#await getFilmList(1, 'popular') then films}
     <ContentCarousel title="Popular" items={films} type={"film"} />
   {/await}

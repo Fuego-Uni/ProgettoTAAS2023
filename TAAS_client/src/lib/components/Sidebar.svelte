@@ -6,7 +6,7 @@
     mainSocketSetHandler,
   } from "$lib/SocketConnection";
   import { onMount } from "svelte";
-  import { addMessagetToChat, getChat, getMessageByChatId } from "$lib/chat";
+  import { addMessagetToChat, getChat, getMessagesByChatId } from "$lib/api/chat";
   import { goto } from "$app/navigation";
 
   async function testRequest() {

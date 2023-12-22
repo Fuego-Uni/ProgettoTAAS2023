@@ -13,7 +13,7 @@ export async function postReview(mediaId: number, vote: number, note: string) {
 
 export async function getReviews(mediaId: number): Promise<Review[]> {
   initiateAxios()
-
+  
   return axios.get(
     'http://localhost:8080/review/friends', { params: { mediaId }, }
   )

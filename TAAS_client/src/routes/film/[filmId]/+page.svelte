@@ -8,12 +8,13 @@
   import Rating from "$lib/components/Rating.svelte";
   import { getUserInfo } from "$lib/store/user_info_store";
   import FriendReview from "$lib/components/FriendReview.svelte";
+  import { mainSocketSetHandler } from "$lib/SocketConnection";
+  import toast, { Toaster } from 'svelte-french-toast';
 
   export let data: PageData;
   let film_id: number = Number.parseInt(data.film_id);
   let media_info: MediaData;
   let film_review: Review[]= [];
-
 
   let review_vote_input: number = 0;
   let review_note_input: string = "";
@@ -23,13 +24,19 @@
   async function pubblicaReview() {
     if(review_vote_input == 0 || review_note_input == "") { return; }
 
+    if(film_id == null) {
+      return
+    }
+
+    console.log(film_id)
+
     postReview(film_id, review_vote_input, review_note_input);
 
     review_vote_input = 0;
     review_note_input = "";
   }
 
-  onMount(async () => {
+  async function updateReviews() {
     media_info = await getFilmInfo(film_id);
     let reviews = await getReviews(film_id);
     let user = await getUserInfo();
@@ -41,6 +48,14 @@
     }
 
     film_review = reviews.filter(review => review.user != user!.email);
+  }
+
+  onMount(async () => {
+    updateReviews();
+
+    mainSocketSetHandler("review-added", updateReviews)
+
+    mainSocketSetHandler("review-updated", updateReviews)
   }); 
 </script>
 

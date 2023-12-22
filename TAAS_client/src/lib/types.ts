@@ -30,6 +30,13 @@ export type Review = {
 }
 
 export type MessageType = {
-  message: string;
-  chat_id: string;
+  content: string;
+  email: string;
+  timestamp: string;
+}
+
+export type ChatType = {
+  id: string;
+  user1: string;
+  user2: string;
 }

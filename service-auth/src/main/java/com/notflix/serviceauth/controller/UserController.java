@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,5 +41,18 @@ public class UserController {
     userJson.addProperty("role", user.get().getRole().toString());
     
     return ResponseEntity.ok(userJson.toString());
+  }
+
+  @GetMapping("/exists")
+  public ResponseEntity<Boolean> userExists(HttpServletRequest request, @RequestParam String email) {
+    System.out.println("Checking if user exists: " + email);
+    
+    Optional<UserEntity> user = userEntityRepository.findByEmail(email);
+
+    if (user.isEmpty()) {
+      return new ResponseEntity<>(false, HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>(true, HttpStatus.OK);
   }
 }

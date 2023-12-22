@@ -9,6 +9,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { mainSocketSetHandler } from '$lib/SocketConnection';
+  import toast, { Toaster } from 'svelte-french-toast';
 
   onMount(() => {
     let url = $page.url.toString();
@@ -20,9 +21,15 @@
       console.log("layout_handler", data );
       // TODO: show notification
     })
+
+    mainSocketSetHandler("new-message", () => toast.success("new message!"))
+    mainSocketSetHandler("review-added", () => toast.success("new review!"))
+    mainSocketSetHandler("friend-deleted", () => toast.error("friend deleted!"))
+    mainSocketSetHandler("friend-added", () => toast.success("friend added!"))
   });
 </script>
 
+<Toaster />
 <div class="page">
   <div class="logo-wrapper">
     <div class="logo">
