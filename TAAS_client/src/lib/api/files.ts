@@ -49,11 +49,33 @@ export async function postProfilePicture(file: File) {
   initiateAxios();
 
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append('image', file);
 
   await axios.post('http://localhost:8080/storage/pfp', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
+}
+
+export async function getImageById(id: string): Promise<string | null> {
+  initiateAxios();
+
+  try {
+    const res = await axios.get(`http://localhost:8080/storage/get`, {
+      responseType: 'blob', // tell axios to treat the response as a blob
+      params: { id }
+    });
+
+    const reader = new FileReader();
+    reader.readAsDataURL(res.data); // convert the blob to a data URL
+
+    return new Promise((resolve, reject) => {
+      reader.onloadend = () => {
+        resolve(reader.result as string)
+      }
+    })
+  } catch (e) {
+    return null;
+  }
 }

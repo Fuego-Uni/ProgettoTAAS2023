@@ -33,6 +33,7 @@ export type MessageType = {
   content: string;
   email: string;
   timestamp: string;
+  image?: string;
 }
 
 export type ChatType = {

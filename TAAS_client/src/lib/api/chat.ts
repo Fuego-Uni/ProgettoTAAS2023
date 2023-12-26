@@ -45,12 +45,17 @@ export const getMessagesByChatId = async (chat_id: string): Promise<MessageType[
     });
 }
 
-export const addMessagetToChat = async (message: string, chat: string): Promise<string> => {
+export const addMessagetToChat = async (message: string, chat: string, file: File | undefined = undefined): Promise<string> => {
   initiateAxios();
 
   return axios.post('http://localhost:8080/chat/add/message', {
-    message: message,
-    chatId: chat
+    message,
+    chatId: chat,
+    image: file
+  }, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   })
     .then((response) => {
       console.log(response.data);

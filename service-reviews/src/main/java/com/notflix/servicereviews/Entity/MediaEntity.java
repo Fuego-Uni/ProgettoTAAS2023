@@ -1,4 +1,4 @@
-package com.notflix.servicereviews.Entity;
+package com.notflix.servicereviews.entity;
 import jakarta.persistence.*;
 
 

@@ -23,4 +23,22 @@ public class Utils {
         responseType
     ).getBody();
   }
+
+  public static <ResponseType> ResponseType postRequestWithAuth(String url, String user, Object... args) {
+    RestTemplate restTemplate = new RestTemplate();
+    RequestEntity<Void> requestEntity = RequestEntity
+        .post(url)
+        .header(HttpHeaders.AUTHORIZATION, user)
+        .build();
+
+    ParameterizedTypeReference<ResponseType> responseType = new ParameterizedTypeReference<ResponseType>() {};
+    
+    return restTemplate.exchange(
+      url,
+      HttpMethod.POST,
+      requestEntity,
+      responseType,
+      args
+    ).getBody();
+  }
 }

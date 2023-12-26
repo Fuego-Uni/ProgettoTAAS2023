@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.notflix.serviceauth.entity.UserEntity;
 import java.util.List;
+import java.util.Optional;
 
 import com.notflix.serviceauth.messages.RabbitMessageSender;
 import com.notflix.serviceauth.repository.UserEntityRepository;
@@ -45,10 +46,24 @@ public class FriendController {
       return ResponseEntity.badRequest().body(gson.toJson("Cannot add yourself as a friend"));
     }
 
-    UserEntity userEntity = userEntityRepository.findByEmail(user)
-        .orElseThrow(() -> new RuntimeException("User not found"));
-    UserEntity friendEntity = userEntityRepository.findByEmail(friend)
-        .orElseThrow(() -> new RuntimeException("Friend not found"));
+    // UserEntity userEntity = userEntityRepository.findByEmail(user)
+    //     .orElseThrow(() -> new RuntimeException("User not found"));
+    // UserEntity friendEntity = userEntityRepository.findByEmail(friend)
+    //     .orElseThrow(() -> new RuntimeException("Friend not found"));
+
+    Optional<UserEntity> userEntityOptional = userEntityRepository.findByEmail(user);
+    Optional<UserEntity> friendEntityOptional = userEntityRepository.findByEmail(friend);
+
+    if (userEntityOptional.isEmpty()) {
+      return ResponseEntity.status(401).body(gson.toJson("User not found"));
+    }
+
+    if (friendEntityOptional.isEmpty()) {
+      return ResponseEntity.status(401).body(gson.toJson("Friend not found"));
+    }
+
+    UserEntity userEntity = userEntityOptional.get();
+    UserEntity friendEntity = friendEntityOptional.get();
 
     userEntity.getFriends().add(friendEntity);
     friendEntity.getFriends().add(userEntity);

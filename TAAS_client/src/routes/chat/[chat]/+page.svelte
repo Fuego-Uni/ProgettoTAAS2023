@@ -1,26 +1,35 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import {
-    addChat,
     addMessagetToChat,
-    getChat,
     getMessagesByChatId,
   } from "$lib/api/chat";
   import type { MessageType } from "$lib/types";
   import ChatMessage from "$lib/components/ChatMessage.svelte";
   import type { PageData } from "./$types";
   import { mainSocketSetHandler } from "$lib/SocketConnection";
-  import toast from "svelte-french-toast";
 
   export let data: PageData;
 
   let messages: MessageType[] = [];
 
+  let file_name = "";
+  function getFileName() {
+    if (file_name == "") return "";
+
+    let file_name_split = file_name.split("\\");
+    return file_name_split[file_name_split.length - 1];
+  }
+
+  let files: FileList;
   let chat_text_input = "";
   async function sendMessage() {
     if (chat_text_input == "") return;
 
-    addMessagetToChat(chat_text_input, data.chat_id);
+    let file = undefined;
+    if (files) { file = files[0]; }
+
+    addMessagetToChat(chat_text_input, data.chat_id, file);
 
     chat_text_input = "";
   }
@@ -28,6 +37,7 @@
   onMount(async () => {
     getMessagesByChatId(data.chat_id).then((res) => {
       messages = res;
+      console.log(messages);
     });
 
     mainSocketSetHandler("new-message", (chat_id: string) => {
@@ -35,6 +45,7 @@
 
       getMessagesByChatId(chat_id).then((res) => {
         messages = res;
+
       });
     });
 
@@ -55,6 +66,8 @@
     class="chat-input ui-interactive"
     bind:value={chat_text_input}
   />
+  <label class="file-input ui-interactive" for="upload">{file_name == "" ? "Upload File" : getFileName()}</label>
+  <input class="file-input-hidden" id="upload" type="file" bind:value={file_name} bind:files={files}>
   <div class="chat-send ui-interactive" on:click={sendMessage}>Send</div>
 </div>
 
@@ -83,6 +96,18 @@
       border: none;
       flex: 1;
     }
+
+    .file-input {
+      padding: 0 0.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .file-input-hidden {
+      display: none;
+    }
+
     .chat-send {
       outline: none;
       border: none;

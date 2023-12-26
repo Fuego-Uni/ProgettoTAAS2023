@@ -32,6 +32,9 @@ public class MessageEntity {
   @Column(nullable = false)
   private Date timestamp;
 
+  @Column(nullable = true)
+  private Long image; 
+
   // set
   public void setId(Long id) {
     this.id = id;
@@ -50,6 +53,11 @@ public class MessageEntity {
   // set email
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  // set image
+  public void setImage(Long image) {
+    this.image = image;
   }
 
   // get message
@@ -75,6 +83,11 @@ public class MessageEntity {
   // get date
   public Date getTimestamp() {
     return timestamp;
+  }
+
+  // get image
+  public Long getImage() {
+    return image;
   }
 
   // set Date

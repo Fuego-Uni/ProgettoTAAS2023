@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import axios from 'axios';
   import { initiateAxios } from '$lib/authentication';
+  import { postProfilePicture } from '$lib/api/files';
 
   let files: FileList;
 
@@ -14,18 +15,8 @@
     if (!files) { return; }
 
     const file = files[0];
-
-    console.log(file);
-
-    const formData = new FormData();
-
-    formData.append('file', file);
-
-    const res = await axios.post('http://localhost:8080/storage/pfp', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    
+    postProfilePicture(file);
   }
 
   async function loadProfile() {

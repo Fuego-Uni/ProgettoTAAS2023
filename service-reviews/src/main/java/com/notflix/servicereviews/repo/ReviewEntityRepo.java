@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.notflix.servicereviews.Entity.ReviewEntity;
+import com.notflix.servicereviews.entity.ReviewEntity;
 
 public interface ReviewEntityRepo extends JpaRepository<ReviewEntity, Long> {
   @Query("SELECT r FROM ReviewEntity r WHERE r.media.id = ?1")
