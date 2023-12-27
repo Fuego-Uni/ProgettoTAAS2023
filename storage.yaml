@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: service-storage
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: service-storage
+    template:
+        metadata:
+            labels:
+                app: service-storage
+        spec:
+            containers:
+            - 
+                name: service-storage
+                image: service-storage:latest
+                ports:
+                - containerPort: 8085
+                env:
+                - 
+                    name: eureka.client.serviceUrl.defaultZone
+                    value: http://service-discovery-server:8761/eureka/
+                - 
+                    name: spring.datasource.url
+                    value: jdbc:mysql://db-storage:3306/storage_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+                - 
+                    name: spring.datasource.username
+                    value: root
+                - 
+                    name: spring.datasource.password
+                    value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: service-storage
+spec:
+    selector:
+        app: service-storage
+    ports:
+    - 
+        protocol: TCP
+        port: 8085
+        targetPort: 8085

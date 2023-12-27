@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: service-chat
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: service-chat
+    template:
+        metadata:
+            labels:
+                app: service-chat
+        spec:
+            containers:
+            - 
+                name: service-chat
+                image: service-chat:latest
+                ports:
+                - containerPort: 8084
+                env:
+                - 
+                    name: eureka.client.serviceUrl.defaultZone
+                    value: http://service-discovery-server:8761/eureka/
+                - 
+                    name: spring.datasource.url
+                    value: jdbc:mysql://db-user:3306/user_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+                - 
+                    name: spring.datasource.username
+                    value: root
+                - 
+                    name: spring.datasource.password
+                    value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: service-chat
+spec:
+    selector:
+        app: service-chat
+    ports:
+    - 
+        protocol: TCP
+        port: 8084
+        targetPort: 8084
