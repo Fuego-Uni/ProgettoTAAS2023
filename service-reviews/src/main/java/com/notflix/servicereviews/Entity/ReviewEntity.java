@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "reviews")
 public class ReviewEntity {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -14,7 +13,7 @@ public class ReviewEntity {
   private String user;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "media_id")
+  @JoinColumn(name = "media")
   private MediaEntity media;
 
   @Column(name = "vote")
@@ -71,5 +70,16 @@ public class ReviewEntity {
 
   public void setNote(String note) {
     this.note = note;
+  }
+
+  @Override
+  public String toString() {
+    return "ReviewEntity{" +
+      "id=" + id +
+      ", user='" + user + '\'' +
+      ", media=" + media +
+      ", vote=" + vote +
+      ", note='" + note + '\'' +
+      '}';
   }
 }

@@ -77,4 +77,19 @@ import { getUserInfo } from "$lib/store/user_info_store";
   .chat-message.self {
     align-self: flex-end;
   }
+
+// MOBILE
+@media (max-width: 950px) {
+  .chat-message {
+    font-size: 0.8rem;
+
+    .date {
+      font-size: 0.6rem;
+    }
+
+    .image {
+      width: 100%;
+    }
+  }
+}
 </style>

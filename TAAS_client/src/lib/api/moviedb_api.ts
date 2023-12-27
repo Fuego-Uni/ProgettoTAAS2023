@@ -50,7 +50,6 @@ export async function getFilmList(page: number, list: 'upcoming' | 'top_rated' |
 export const getShowInfo = async (id: number): Promise<MediaData> => {
   const response = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=it-US`)
   const data = await response.json()
-  console.log(data)
   const photo = { poster_path: data.poster_path, backdrop_path: data.backdrop_path }
 
   const imageUtr = `https://image.tmdb.org/t/p/w500${photo.poster_path}`

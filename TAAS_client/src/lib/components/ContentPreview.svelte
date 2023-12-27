@@ -29,7 +29,7 @@
   .content-preview {
     width: 15rem;
     height: 100%;
-    aspect-ratio: 3/2;
+    height: 10rem;
     display: grid;
     grid-template-rows: 1fr 6rem;
     grid-template-columns: 1fr 1fr;
@@ -42,7 +42,8 @@
     margin: 0 1rem;
 
     &.active {
-      aspect-ratio: 5/2;
+      // aspect-ratio: 5/2;
+      height: 10rem;
       width: 25rem;
       border-radius: 0;
       margin: 0 1.5rem;
@@ -117,9 +118,13 @@
   // MOBILE
   @media (max-width: 950px) {
     .content-preview {
-      width: 100%;
-      height: 13rem;
       aspect-ratio: unset;
+      // height: 13rem;
+
+      &.active {
+        width: var(--preview-width);
+        aspect-ratio: unset;
+      }
     }
   }
 </style>

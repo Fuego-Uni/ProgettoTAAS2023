@@ -42,35 +42,36 @@ public class ReviewController {
 
   // post a review
   @PostMapping("/add")
-  public String postReview(HttpServletRequest request, @RequestParam int mediaId, @RequestParam int vote, @RequestParam String note) {
+  public String postReview(
+    HttpServletRequest request,
+    @RequestParam int mediaId,
+    @RequestParam int vote,
+    @RequestParam String note,
+    @RequestParam String type
+  ) {
     // get email from AUTHORIZATION header
     String user = request.getHeader("Authorization");
 
     // check if media exists
-    Optional<MediaEntity> media = mediaEntityRepo.findById(mediaId);
+    Optional<MediaEntity> media = mediaEntityRepo.findByIdAndType(mediaId, type);
 
     // TODO: check if the id is a media or a series, etc...
 
     MediaEntity newMedia;
 
+    // if there is no media already with this id, create one
     if (media.isEmpty()) {
       // add media to db
-      newMedia = new MediaEntity(mediaId);
+      newMedia = new MediaEntity(mediaId, type);
       newMedia = mediaEntityRepo.save(newMedia);
     } else {
       newMedia = media.get();
     }
 
-    // find review from the same user
-    Optional<ReviewEntity> reviewEntity = reviewEntityRepo.findByMediaIdAndUserEmail(mediaId, user);
+    // find review from the same user of this media
+    Optional<ReviewEntity> reviewEntity = reviewEntityRepo.findByIdandEmail(newMedia.getId(), user);
 
     ReviewEntity review;
-
-    if (media.isEmpty()) {
-      // add media to db
-      newMedia = new MediaEntity(mediaId);
-      newMedia = mediaEntityRepo.save(newMedia);
-    }
 
     String message;
 
@@ -108,15 +109,22 @@ public class ReviewController {
 
   // get reviews of a media from friends
   @GetMapping("/friends")
-  public ResponseEntity<String> getFriendReviews(HttpServletRequest request, @RequestParam int mediaId) {
+  public ResponseEntity<String> getFriendReviews(
+    HttpServletRequest request,
+    @RequestParam int mediaId,
+    @RequestParam String type
+  ) {
     String user = request.getHeader("Authorization");
 
-    // TODO: check if the id is a media or a series, etc...
-    List<ReviewEntity> reviews = reviewEntityRepo.findByMediaId(mediaId);
+    System.out.println("getFriendReviews, mediaId: " + mediaId + ", type: " + type);
+
+    List<ReviewEntity> reviews = reviewEntityRepo.findByMediaIdAndType(mediaId, type);
+
+    System.out.println("getFriendReviews, found " + reviews.size() + " reviews");
 
     // filter reviews by friends
     List<String> friends = Utils.getRequestWithAuth("http://service-auth:8081/user/friend/all", user);
-    
+
     friends.add(user);
 
     for (int i = 0; i < reviews.size(); i++) {
@@ -126,10 +134,14 @@ public class ReviewController {
       }
     }
 
+    System.out.println("getFriendReviews, found " + reviews.size() + " reviews after filtering");
+
     if (!reviews.isEmpty()) {
       JsonArray reviewsJson = new JsonArray();
 
       for (ReviewEntity review : reviews) {
+        System.out.println(review.toString());
+
         JsonObject reviewJson = new JsonObject();
         reviewJson.addProperty("vote", review.getVote());
         reviewJson.addProperty("note", review.getNote());
@@ -151,7 +163,10 @@ public class ReviewController {
 
   // get all media with a review from friends
   @GetMapping("/media")
-  public ResponseEntity<String> getMediaWithReview(HttpServletRequest request) {
+  public ResponseEntity<String> getMediaWithReview(
+    HttpServletRequest request,
+    @RequestParam("type") String type
+  ) {
     System.out.println("getMediaWithReview");
     String user = request.getHeader("Authorization");
 
@@ -178,12 +193,20 @@ public class ReviewController {
       }
     }
 
+    // filter media by type
+    for (int i = 0; i < media.size(); i++) {
+      if (!media.get(i).getType().equals(type)) {
+        media.remove(i);
+        i--;
+      }
+    }
+
     if (!media.isEmpty()) {
       JsonArray mediaJson = new JsonArray();
 
       for (MediaEntity mediaEntity : media) {
         JsonObject mediaJsonObj = new JsonObject();
-        mediaJsonObj.addProperty("id", mediaEntity.getId());
+        mediaJsonObj.addProperty("id", mediaEntity.getMediaId());
 
         mediaJson.add(mediaJsonObj);
       }

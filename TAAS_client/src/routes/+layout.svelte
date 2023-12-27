@@ -21,7 +21,7 @@
 
     if (!user && !url.includes('auth')) {
       console.log('redirecting to signup');
-      goto('auth/signup');
+      goto('/auth/signup');
     } else {
       console.log('user is logged in');
     }
@@ -50,9 +50,9 @@
   <div class="categories-wrapper">
     <Categories></Categories>
   </div>
-  <div class="search-wrapper">
+  <!-- <div class="search-wrapper">
     <Search></Search>
-  </div>
+  </div> -->
   <div class="sidebar-wrapper">
     <Sidebar></Sidebar>
   </div>
@@ -124,10 +124,10 @@
 @media (max-width: 950px) {
   .page {
     grid-template-areas: 
-      "sidebar logo search"
-      "categories categories categories"
-      "content content content";
-    grid-template-columns: 4rem 1fr 4rem;
+      "sidebar logo"
+      "categories categories"
+      "content content";
+    grid-template-columns: 1fr 2fr;
     grid-template-rows: 4rem 2rem 1fr;
 
     .sidebar-wrapper {

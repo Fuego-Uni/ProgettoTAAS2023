@@ -118,4 +118,11 @@
       align-items: center;
     }
   }
+
+// MOBILE
+@media (max-width: 950px) {
+  .message-container {
+    padding-right: 0.5rem;
+  }
+}
 </style>

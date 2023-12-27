@@ -9,12 +9,12 @@
   let reviewed_films: MediaData[] = [];
 
   export async function updateReviewedFilmInfo() {
-    let media = await getReviewedMedia();
+    let media = await getReviewedMedia("film");
     
     let media_info = await Promise.all(media.map(getFilmInfo));
 
     for(let i = 0; i < media_info.length; i++) {
-      let reviews = await getFriendReviews(media_info[i].id);
+      let reviews = await getFriendReviews(media_info[i].id, "film");
 
       let average = 0;
       for(let j = 0; j < reviews.length; j++) {
@@ -77,6 +77,8 @@
   // MOBILE
   @media (max-width: 950px) {
     .page {
+      width: 100%;
+
       padding: 1rem;
       padding-top: 0;
       margin-top: 1rem;

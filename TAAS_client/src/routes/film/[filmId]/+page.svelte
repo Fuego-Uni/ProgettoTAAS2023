@@ -30,7 +30,7 @@
 
     console.log(film_id)
 
-    postReview(film_id, review_vote_input, review_note_input);
+    postReview(film_id, review_vote_input, review_note_input, "film");
 
     review_vote_input = 0;
     review_note_input = "";
@@ -38,7 +38,7 @@
 
   async function updateReviews() {
     media_info = await getFilmInfo(film_id);
-    let reviews = await getReviews(film_id);
+    let reviews = await getReviews(film_id, "film");
     let user = await getUserInfo();
 
     let my_review = reviews.find(review => review.user == user!.email);
@@ -66,7 +66,7 @@
       <div class="info-container">
         <h1>{media_info?.title}</h1>
         <p>{media_info?.release_date}</p>
-        <p>{media_info?.overview}</p>
+        <p class="overview">{media_info?.overview}</p>
       </div>
     </div>
     <div class="carousel-wrap">
@@ -102,6 +102,9 @@
     .left-wrap {
       height: 100%;
       width: 60%;
+
+      display: flex;
+      flex-direction: column;
     }
 
     .right-wrap {
@@ -110,7 +113,8 @@
     }
 
     .poster-wrap {
-      height: 60%;
+      // height: 60%;
+      flex: 1;
       width: 100%;
       display: grid;
       grid-template-columns: 100%;
@@ -150,8 +154,9 @@
     }
 
     .carousel-wrap {
-      height: 40%;
+      height: fit-content;
       width: 100%;
+      overflow: hidden;
     }
 
     .review-post {
@@ -193,4 +198,56 @@
       overflow-y: scroll;
     }
   }
+
+// MOBILE
+@media (max-width: 950px) {
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    overflow: scroll;
+    height: 100%;
+
+    .left-wrap {
+      height: 100%;
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 2rem;
+    }
+
+    .right-wrap {
+      height: 100%;
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 2rem;
+
+      .review-post {
+        height: fit-content;
+      }
+    }
+
+    .poster-wrap {
+      height: 20rem;
+      width: 100%;
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .overview {
+        display: none;
+      }
+    }
+
+    .carousel-wrap {
+      display: none;
+    }
+  }
+}
 </style>

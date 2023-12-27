@@ -1,63 +1,37 @@
 <script lang="ts">
-  import { getShowInfo, getShowList } from "$lib/api/moviedb_api";
+  import { getShowInfo } from "$lib/api/moviedb_api";
   import type { MediaData, Review } from "$lib/types";
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import ContentCarousel from "$lib/components/ContentCarousel.svelte";
   import { getReviews, postReview } from "$lib/api/reviews";
-  import Rating from "$lib/components/Rating.svelte";
-  import { getUserInfo } from "$lib/store/user_info_store";
-  import FriendReview from "$lib/components/FriendReview.svelte";
-  import { mainSocketSetHandler } from "$lib/SocketConnection";
-  import toast, { Toaster } from 'svelte-french-toast';
 
   export let data: PageData;
   let show_id: number = Number.parseInt(data.show_id);
   let media_info: MediaData;
-  let show_review: Review[]= [];
+  let film_review: Review[]= [];
+
 
   let review_vote_input: number = 0;
   let review_note_input: string = "";
 
   $: { review_vote_input = review_vote_input > 10 ? 10 : review_vote_input; }
 
+  onMount(async () => {
+    media_info = await getShowInfo(show_id);
+    film_review = await getReviews(show_id)
+
+    console.log(film_review);
+  }); 
+
   async function pubblicaReview() {
     if(review_vote_input == 0 || review_note_input == "") { return; }
 
-    if(show_id == null) {
-      return
-    }
-
-    console.log(show_id)
-
-    postReview(show_id, review_vote_input, review_note_input, "show");
+    postReview(show_id, review_vote_input, review_note_input);
 
     review_vote_input = 0;
     review_note_input = "";
   }
-
-  async function updateReviews() {
-    console.log("update reviews")
-
-    media_info = await getShowInfo(show_id);
-    let reviews = await getReviews(show_id, "show");
-    let user = await getUserInfo();
-
-    let my_review = reviews.find(review => review.user == user!.email);
-    if(my_review) {
-      review_vote_input = my_review.vote;
-      review_note_input = my_review.note;
-    }
-
-    show_review = reviews.filter(review => review.user != user!.email);
-  }
-
-  onMount(async () => {
-    updateReviews();
-
-    mainSocketSetHandler("review-added", updateReviews)
-    mainSocketSetHandler("review-updated", updateReviews)
-  }); 
 </script>
 
 <div class="page">
@@ -67,13 +41,13 @@
       <div class="info-container">
         <h1>{media_info?.title}</h1>
         <p>{media_info?.release_date}</p>
-        <p class="overview">{media_info?.overview}</p>
+        <p>{media_info?.overview}</p>
       </div>
     </div>
     <div class="carousel-wrap">
-      {#await getShowList(1, 'popular') then shows}
-        <ContentCarousel title="" items={shows} type="show" />
-      {/await}
+      <!-- {#await getPopularFilms(2) then films1}
+        <ContentCarousel title="" items={films1} />
+      {/await} -->
     </div>
   </div>
   <div class="right-wrap">
@@ -84,9 +58,7 @@
     </div>
 
     <div class="review-list">
-      {#each show_review as review}
-        <FriendReview review={review} />
-      {/each}
+      
     </div>
   </div>
 </div>
@@ -153,7 +125,6 @@
     .carousel-wrap {
       height: 40%;
       width: 100%;
-      overflow: hidden;
     }
 
     .review-post {
@@ -186,65 +157,5 @@
         height: 2.5rem;
       }
     }
-
-    .review-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-
-      overflow-y: scroll;
-    }
   }
-
-// MOBILE
-@media (max-width: 950px) {
-  .page {
-    display: flex;
-    flex-direction: column;
-    height: fit-content;
-    overflow: scroll;
-    height: 100%;
-
-    .left-wrap {
-      height: 100%;
-      width: 100%;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 2rem;
-    }
-
-    .right-wrap {
-      height: 100%;
-      width: 100%;
-
-      display: flex;
-      flex-direction: column;
-
-      gap: 2rem;
-
-      .review-post {
-        height: fit-content;
-      }
-    }
-
-    .poster-wrap {
-      height: 20rem;
-      width: 100%;
-
-      h1 {
-        font-size: 1.5rem;
-      }
-
-      .overview {
-        display: none;
-      }
-    }
-
-    .carousel-wrap {
-      display: none;
-    }
-  }
-}
 </style>
