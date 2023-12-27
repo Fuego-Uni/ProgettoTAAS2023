@@ -10,13 +10,24 @@
   import { page } from '$app/stores';
   import { mainSocketSetHandler } from '$lib/SocketConnection';
   import toast, { Toaster } from 'svelte-french-toast';
+  import { getUserInfo } from '$lib/store/user_info_store';
 
-  onMount(() => {
-    let url = $page.url.toString();
-    if(localStorage.getItem('auth-token') === null && !url.includes('auth/signup')) {
-      goto('auth/signup')
+  page.subscribe(async (value) => {
+    // check if on the client
+    if (typeof window === 'undefined') return;
+
+    let user = await getUserInfo();
+    let url = value.url.toString();
+
+    if (!user && !url.includes('auth')) {
+      console.log('redirecting to signup');
+      goto('auth/signup');
+    } else {
+      console.log('user is logged in');
     }
+  });
 
+  onMount(async () => {
     mainSocketSetHandler("notification", (data) => {
       console.log("layout_handler", data );
       // TODO: show notification

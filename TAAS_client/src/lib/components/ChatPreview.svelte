@@ -18,6 +18,7 @@
     console.log(data, other_user);
     
     if (other_user == data) {
+      console.log(data)
       profile_picture = await getProfilePictureFriend(data);
     }
   }
@@ -68,6 +69,15 @@
       height: 2rem;
       width: 2rem;
       border-radius: 50%;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background-color: var(--color-main-accent);
+      color: white;
+      font-size: 1.2rem;
+      position: relative;
     }
 
     &__user {

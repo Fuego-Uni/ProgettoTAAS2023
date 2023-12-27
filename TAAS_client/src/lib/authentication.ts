@@ -25,6 +25,8 @@ export function initiateAxios() {
 }
 
 export async function fetchUserInfo(): Promise<UserInfo> {
+  initiateAxios()
+  
   let response = await axios.get(
     'http://localhost:8080/user/get', { }
   )

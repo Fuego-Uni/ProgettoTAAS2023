@@ -11,6 +11,6 @@
 
     setAuthenticationToken(code);
 
-    goto("/")
+    goto("/profile")
   });
 </script>
