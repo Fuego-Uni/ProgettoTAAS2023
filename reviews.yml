@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: service-reviews
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: service-reviews
+    template:
+        metadata:
+            labels:
+                app: service-reviews
+        spec:
+            containers:
+            - 
+                name: service-reviews
+                image: service-reviews:latest
+                ports:
+                - containerPort: 8083
+                env:
+                - 
+                    name: eureka.client.serviceUrl.defaultZone
+                    value: http://service-discovery-server:8761/eureka/
+                - 
+                    name: spring.datasource.url
+                    value: jdbc:mysql://db-user:3306/user_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+                - 
+                    name: spring.datasource.username
+                    value: root
+                - 
+                    name: spring.datasource.password
+                    value: root
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-reviews
+spec:
+  selector:
+    app: service-reviews
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 8083
