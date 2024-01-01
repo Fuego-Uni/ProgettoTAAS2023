@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-storage
+  name: db-chat
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db-storage
+      app: db-chat
   template:
     metadata:
       labels:
-        app: db-storage
+        app: db-chat
     spec:
       containers:
-        - name: db-storage
+        - name: db-chat
           image: mysql:5.7
           ports:
             - containerPort: 3306
@@ -21,15 +21,15 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: root
             - name: MYSQL_DATABASE
-              value: storage_db
+              value: chat_db
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: db-storage
+  name: db-chat
 spec:
   selector:
-    app: db-storage
+    app: db-chat
   ports:
     - protocol: TCP
       port: 3306

@@ -1,36 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: service-auth
+  name: service-auth
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: service-auth
-    template:
-        metadata:
-            labels:
-                app: service-auth
-        spec:
-            containers:
-            - 
-                name: service-auth
-                image: service-auth:latest
-                ports:
-                - containerPort: 8082
-                env:
-                - 
-                    name: eureka.client.serviceUrl.defaultZone
-                    value: http://service-discovery-server:8761/eureka/
-                - 
-                    name: spring.datasource.url
-                    value: jdbc:mysql://db-user:3306/user_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
-                - 
-                    name: spring.datasource.username
-                    value: root
-                - 
-                    name: spring.datasource.password
-                    value: root
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-auth
+  template:
+    metadata:
+      labels:
+        app: service-auth
+    spec:
+      containers:
+        - name: service-auth
+          image: service-auth:fuego
+          ports:
+            - containerPort: 8082
+          env:
+            - name: eureka.client.serviceUrl.defaultZone
+              value: http://service-discovery-server:8761/eureka/
+            - name: spring.datasource.url
+              value: jdbc:mysql://db-user:3306/user_db?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+            - name: spring.datasource.username
+              value: root
+            - name: spring.datasource.password
+              value: root
 ---
 apiVersion: v1
 kind: Service
@@ -40,6 +35,6 @@ spec:
   selector:
     app: service-auth
   ports:
-  - protocol: TCP
-    port: 8082
-    targetPort: 8082
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

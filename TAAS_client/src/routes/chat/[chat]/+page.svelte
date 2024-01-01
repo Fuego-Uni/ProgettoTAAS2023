@@ -8,6 +8,7 @@
   import ChatMessage from "$lib/components/ChatMessage.svelte";
   import type { PageData } from "./$types";
   import { mainSocketSetHandler } from "$lib/SocketConnection";
+  import { goto } from "$app/navigation";
 
   export let data: PageData;
 
@@ -36,9 +37,12 @@
 
   onMount(async () => {
     getMessagesByChatId(data.chat_id).then((res) => {
-      messages = res;
-      console.log(messages);
-    });
+      if (res === undefined || res === null) {
+        goto("/chat");
+      } else {
+        messages = res;
+      }
+    })
 
     mainSocketSetHandler("new-message", (chat_id: string) => {
       if (chat_id != data.chat_id) return;
@@ -48,8 +52,6 @@
 
       });
     });
-
-
   });
 </script>
 

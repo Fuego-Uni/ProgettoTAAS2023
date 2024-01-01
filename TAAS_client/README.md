@@ -8,10 +8,10 @@ If you're seeing this, you've probably already done this step. Congrats!
 
 ```bash
 # create a new project in the current directory
-npm create svelte@latest
+npm create svelte@fuego
 
 # create a new project in my-app
-npm create svelte@latest my-app
+npm create svelte@fuego my-app
 ```
 
 ## Developing

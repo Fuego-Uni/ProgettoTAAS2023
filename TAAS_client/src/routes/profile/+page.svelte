@@ -62,7 +62,8 @@
     editing = false;
     user_name = old_user_name;
     user_email = old_user_email;
-    profile_picture = old_profile_picture;
+
+    if (old_profile_picture) profile_picture = old_profile_picture;
   }
 
   async function saveEdit() {

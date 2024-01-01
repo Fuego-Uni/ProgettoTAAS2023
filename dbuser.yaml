@@ -1,30 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: db-user
+  name: db-user
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: db-user
-    template:
-        metadata:
-            labels:
-                app: db-user
-        spec:
-            containers:
-            - 
-                name: db-user
-                image: mysql:5.7
-                ports:
-                - containerPort: 3306
-                env:
-                - 
-                    name: MYSQL_ROOT_PASSWORD
-                    value: root
-                - 
-                    name: MYSQL_DATABASE
-                    value: user_db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-user
+  template:
+    metadata:
+      labels:
+        app: db-user
+    spec:
+      containers:
+        - name: db-user
+          image: mysql:5.7
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_DATABASE
+              value: user_db
 ---
 apiVersion: v1
 kind: Service
@@ -34,6 +31,6 @@ spec:
   selector:
     app: db-user
   ports:
-  - protocol: TCP
-    port: 3306
-    targetPort: 3306
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

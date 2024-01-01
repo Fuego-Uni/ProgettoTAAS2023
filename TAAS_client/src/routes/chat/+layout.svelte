@@ -2,21 +2,28 @@
   import { onMount } from "svelte";
   import { addChat, addMessagetToChat, getChat, getMessagesByChatId } from "$lib/api/chat";
   import ChatPreview from "$lib/components/ChatPreview.svelte";
-  import type { MessageType } from "$lib/types";
+  import type { ChatType, MessageType } from "$lib/types";
   import ChatMessage from "$lib/components/ChatMessage.svelte";
   import { goto } from "$app/navigation";
+  import { mainSocketSetHandler } from "$lib/SocketConnection";
 
   let add_user_input = "";
   let current_chat: string | null = null;
+
+  let chat_list: ChatType[] = [];
+
+  async function updateChatList() {
+    chat_list = await getChat();
+  }
 
   async function createNewChat() {
     addChat(add_user_input)
   }
 
   onMount(async () => {
-    getChat().then((res) => {
-      console.log(res);
-    });
+    await updateChatList();
+
+    mainSocketSetHandler("new-chat", updateChatList)
   });
 </script>
 
@@ -31,11 +38,9 @@
       </div>
     </div>
     
-    {#await getChat() then chats}
-      {#each chats as chat}
-        <ChatPreview chat={chat} on:click={() => {goto(`/chat/${chat.id}`)}} />
-      {/each}
-    {/await}
+    {#each chat_list as chat}
+      <ChatPreview chat={chat} on:click={() => {goto(`/chat/${chat.id}`)}} />
+    {/each}
 
   </div>
   <div class="chat_panel">

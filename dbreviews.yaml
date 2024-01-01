@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-storage
+  name: db-reviews
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db-storage
+      app: db-reviews
   template:
     metadata:
       labels:
-        app: db-storage
+        app: db-reviews
     spec:
       containers:
-        - name: db-storage
+        - name: db-reviews
           image: mysql:5.7
           ports:
             - containerPort: 3306
@@ -21,15 +21,15 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: root
             - name: MYSQL_DATABASE
-              value: storage_db
+              value: reviews_db
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: db-storage
+  name: db-reviews
 spec:
   selector:
-    app: db-storage
+    app: db-reviews
   ports:
     - protocol: TCP
       port: 3306

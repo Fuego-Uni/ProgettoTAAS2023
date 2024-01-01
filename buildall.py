@@ -44,7 +44,7 @@ for d in f:
     os.system('mvn package')
     """ docker build --rm -t 'name' . """
   os.system(f'docker rmi  {d} .')
-  os.system(f'docker build -t {d} .')
+  os.system(f'docker build -t {d}:fuego .')
   os.chdir('..')
 
 # end timer, print in seconds

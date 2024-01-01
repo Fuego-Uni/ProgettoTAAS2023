@@ -1,48 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rabbitmq
+ name: rabbitmq
 spec:
-  replicas: 1
-  selector:
+ replicas: 1
+ selector:
     matchLabels:
       app: rabbitmq
-  template:
+ template:
     metadata:
       labels:
         app: rabbitmq
     spec:
-            containers:
-                - name: rabbitmq
-                  image: rabbitmq:3.9.8-management-alpine
-                  ports:
-                  - containerPort: 5672
-                  - containerPort: 15672
-                  env:
-                  - name: RABBITMQ_DEFAULT_USER
-                    value: admin
-                  - name: RABBITMQ_DEFAULT_PASS
-                    value: admin
-                  resources:
-                    limits:
-                      cpu: "1"
-                      memory: "1Gi"
-                    requests:
-                      cpu: "100m"
-                      memory: "256Mi"
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.9.8-management-alpine
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: admin
+            - name: RABBITMQ_DEFAULT_PASS
+              value: admin
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq
+ name: rabbitmq
 spec:
-  selector:
+ selector:
     app: rabbitmq
-  ports:
-  - protocol: TCP
-    port: 5672
-    targetPort: 5672
-  - protocol: TCP
-    port: 15672
-    targetPort: 15672
+ ports:
+    - name: rabbitmq
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: rabbitmq-management
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
