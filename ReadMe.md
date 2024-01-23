@@ -4,9 +4,9 @@
 
 ## Project Overview
 
-## Getting Started (Docker)
+## Run on Docker (Windows)
 
-Follow these steps to get the project up and running (Windows):
+### Setup (1 time)
 
 0. **Clone repo:**
     ```
@@ -22,22 +22,46 @@ Follow these steps to get the project up and running (Windows):
     ```
     altrimenti si può eseguire il python `buildall.py` per compilarli tutti automaticamente
 
-2. **Run the Dockerfile:**
+### Run
+2. **Run con docker compose:**
     ```
-    docker-compose build && docker-compose up
+    docker-compose build
+    docker-compose up -d
+    ```
+    oppure con powershell:
+    ```
+    (docker-compose build) -and (docker-compose up -d)
     ```
 
-## Development
+## Run on Kubernetes (Windows, Minikube)
+### Setup (1 time)
+1. **Start minikube:**
+    ```
+    minikube start
+    ```
 
-Access to resources:
+2. **Impostare powershell a usare minikube e non docker:**
+    ```
+    minikube -p minikube docker-env --shell powershell | Invoke-Expression
+    ```
 
-- localhost:8081/demo
+3. **buildare i servizi:**
+    ```
+    python .\buildall.py
+    ```
 
-- con uso di gateway: localhost:8080/demo
+4. **inizializza tutti i pod:**
+    ```
+    Get-ChildItem *.yaml | ForEach-Object { kubectl apply -f $_.FullName }
+    ```
 
-TODO:
-gestire se hai gia recensito il film
-mostrare solo i film consigliati
-rework soket
-css film
-chat service
+### Run
+5. **run the services:**
+    ```
+    minikube start
+    ```
+
+6. **port forwarding:**
+    ```
+    minikube tunnel
+    ```
