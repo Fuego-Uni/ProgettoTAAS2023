@@ -2,29 +2,30 @@
 
 ## Introduction
 
-Welcome to the SpringBoot 3 project! This document provides an overview of the project and instructions on how to set it up, run it, and develop further.
-
 ## Project Overview
 
-SpringBoot 3 is a Java-based web application built using the Spring Boot framework. It serves as a starting point for building modern, robust, and scalable web applications. This project includes various features and technologies to help you get started with your own web application development.
+## Getting Started (Docker)
 
-## Getting Started
+Follow these steps to get the project up and running (Windows):
 
-Follow these steps to get the project up and running:
+0. **Clone repo:**
+    ```
+    git clone https://github.com/Fuego-Uni/ProgettoTAAS2023
+    ```
 
-1. **Build and run Docker :**
-   ```   
-   python3 buildall.py  
-   
-   ```
+1. **Build the services:**\
+    per ogni cartella `service` eseguire:
+    ```
+    ./mvnw package
+    docker rmi <nome-servizio> .
+    docker build -t <nome-servizio>:fuego .
+    ```
+    altrimenti si può eseguire il python `buildall.py` per compilarli tutti automaticamente
 
 2. **Run the Dockerfile:**
-   Navigate to the project directory and build it using Maven:
-   ```
-
-   Run with: docker-compose build && docker-compose up (on powershell: docker-compose build ; docker-compose up)
-   
-   ```
+    ```
+    docker-compose build && docker-compose up
+    ```
 
 ## Development
 
